@@ -1,12 +1,14 @@
-<<<<<<< HEAD
 # react-fiber
 =======
-# React + Vite
+# 🌍 Interactive XR Environment with React Three Fiber  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## 🚀 Features  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
->>>>>>> 6f24b69 (Initial commit)
+- **Virtual Reality (VR) Support** 🕶️  
+- **Day & Night Cycle** 🌞🌙 with smooth transitions  
+- **Interactive Objects** (Fan, Lamp, Streetlight, etc.)  
+- **Power Sources** (Solar Panels ☀️ & Bike Generator 🚴)  
+- **Teleportation & Free Movement** in the scene  
+- **Dynamic Weather Elements** (Spinning Clouds ☁️, Celestial Bodies 🌕☀️)  
+- **Interactive Control Panel** for switching energy sources & devices  
