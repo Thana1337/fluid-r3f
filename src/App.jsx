@@ -1,3 +1,4 @@
+// Refactored with minimal changes, 2-space indentation, and minimal comments
 import React, { useState, useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget, createXRStore } from "@react-three/xr";
@@ -10,11 +11,12 @@ const store = createXRStore({
   controller: { teleportPointer: true },
 });
 
+// GLB model loader
 function GLBModel({ path, position, scale, rotation, animationSpeed }) {
   const { scene, animations } = useGLTF(path);
   const { actions } = useAnimations(animations, scene);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const animationName = "M_rig_Action_S";
     if (actions && actions[animationName]) {
       actions[animationName].play();
@@ -27,9 +29,7 @@ function GLBModel({ path, position, scale, rotation, animationSpeed }) {
     };
   }, [actions, animationSpeed]);
 
-  if (rotation) {
-    scene.rotation.set(...rotation);
-  }
+  if (rotation) scene.rotation.set(...rotation);
 
   return <primitive object={scene} position={position} scale={scale} />;
 }
@@ -37,64 +37,77 @@ function GLBModel({ path, position, scale, rotation, animationSpeed }) {
 function CelestialBody({ isNight }) {
   const moonRef = useRef();
   const sunRef = useRef();
-  const [sunPosition, setSunPosition] = useState([0, 100, -100]); // Start high
-  const [moonPosition, setMoonPosition] = useState([-10, -50, -100]); // Start below horizon
+  const [sunPosition, setSunPosition] = useState([0, 100, -100]);
+  const [moonPosition, setMoonPosition] = useState([-10, -50, -100]);
 
   useEffect(() => {
-    let targetSunY = isNight ? -50 : 100; // Sun moves down at night, up in day
-    let targetMoonY = isNight ? 100 : -50; // Moon moves up at night, down in day
-    let speed = 10; // Controls how smooth the transition is
-
+    let targetSunY = isNight ? -50 : 100;
+    let targetMoonY = isNight ? 100 : -50;
+    let speed = 10;
     const interval = setInterval(() => {
       setSunPosition((prev) => {
         let newY = prev[1] + (isNight ? -speed : speed);
-        if ((isNight && newY <= targetSunY) || (!isNight && newY >= targetSunY)) {
+        if (
+          (isNight && newY <= targetSunY) ||
+          (!isNight && newY >= targetSunY)
+        ) {
           clearInterval(interval);
           return [prev[0], targetSunY, prev[2]];
         }
         return [prev[0], newY, prev[2]];
       });
-
       setMoonPosition((prev) => {
         let newY = prev[1] + (isNight ? speed : -speed);
-        if ((isNight && newY >= targetMoonY) || (!isNight && newY <= targetMoonY)) {
+        if (
+          (isNight && newY >= targetMoonY) ||
+          (!isNight && newY <= targetMoonY)
+        ) {
           clearInterval(interval);
           return [prev[0], targetMoonY, prev[2]];
         }
         return [prev[0], newY, prev[2]];
       });
-    }, 50); // Runs every 50ms for smooth transition
-
+    }, 50);
     return () => clearInterval(interval);
-  }, [isNight]); // Runs when isNight changes
+  }, [isNight]);
 
   return (
     <group>
-      {/* Moon Model (Rises at Night, Falls in Day) */}
+      {/* Moon */}
       <primitive
         ref={moonRef}
         object={useGLTF("/models/moon.glb").scene}
         position={moonPosition}
         scale={[0.7, 0.7, 0.7]}
       />
-      
-      {/* Sun Model (Falls at Night, Rises in Day) */}
+      {/* Sun */}
       <primitive
         ref={sunRef}
         object={useGLTF("/models/sun.glb").scene}
         position={sunPosition}
         scale={[0.05, 0.05, 0.05]}
       />
-      <directionalLight position={sunPosition} intensity={3} color="yellow" castShadow />
+      <directionalLight
+        position={sunPosition}
+        intensity={3}
+        color="yellow"
+        castShadow
+      />
     </group>
   );
 }
 
 function Fence({ position, rotation, scale }) {
   const { scene } = useGLTF("/models/fence.glb");
-  return <primitive object={scene.clone()} position={position} rotation={rotation} scale={scale} />;
+  return (
+    <primitive
+      object={scene.clone()}
+      position={position}
+      rotation={rotation}
+      scale={scale}
+    />
+  );
 }
-
 
 function SunLight({ isNight }) {
   return (
@@ -110,75 +123,70 @@ function SunLight({ isNight }) {
   );
 }
 
-
 function Fan({ isPowered }) {
   const { scene, animations } = useGLTF("/models/fan.glb");
   const { actions } = useAnimations(animations, scene);
-  const [animationSpeed, setAnimationSpeed] = useState(0); // Start at 0 speed
+  const [animationSpeed, setAnimationSpeed] = useState(0);
 
   useEffect(() => {
     if (!actions || !actions.Animation) return;
-
-    let targetSpeed = isPowered ? 1 : 0; // Full speed when on, stop when off
-    let speedStep = isPowered ? 0.1 : -0.1; // Increase when turning on, decrease when off
-
+    let targetSpeed = isPowered ? 1 : 0;
+    let speedStep = isPowered ? 0.1 : -0.1;
     const interval = setInterval(() => {
       setAnimationSpeed((prev) => {
         let newSpeed = prev + speedStep;
-        if ((isPowered && newSpeed >= targetSpeed) || (!isPowered && newSpeed <= targetSpeed)) {
-          clearInterval(interval); // Stop updating when reaching target
+        if (
+          (isPowered && newSpeed >= targetSpeed) ||
+          (!isPowered && newSpeed <= targetSpeed)
+        ) {
+          clearInterval(interval);
           return targetSpeed;
         }
         return newSpeed;
       });
-    }, 100); // Adjust every 100ms for smooth transition
-
+    }, 100);
     return () => clearInterval(interval);
   }, [isPowered, actions]);
 
   useEffect(() => {
     if (actions.Animation) {
       actions.Animation.play();
-      actions.Animation.timeScale = animationSpeed; // Adjust fan speed smoothly
+      actions.Animation.timeScale = animationSpeed;
     }
   }, [animationSpeed, actions]);
 
   return <primitive object={scene} position={[1.5, 1, -2]} scale={[1, 1, 1]} />;
 }
 
-
 function Lamp({ isPowered }) {
-  const [lightIntensity, setLightIntensity] = useState(0); // Start with light off
-  const [blinking, setBlinking] = useState(false); // Track blinking state
+  const [lightIntensity, setLightIntensity] = useState(0);
+  const [blinking, setBlinking] = useState(false);
 
   useEffect(() => {
-    if (blinking) return; // Prevent multiple blinking sequences
-
+    if (blinking) return;
     if (isPowered) {
-      // Simulate blinking effect before turning on
       setBlinking(true);
       let blinkCount = 0;
       const blinkInterval = setInterval(() => {
-        setLightIntensity((prev) => (prev > 0 ? 0 : 1)); // Toggle light
+        setLightIntensity((prev) => (prev > 0 ? 0 : 1));
         blinkCount++;
         if (blinkCount >= 4) {
           clearInterval(blinkInterval);
           setBlinking(false);
-          setLightIntensity(1); // Fully turn on the lamp
+          setLightIntensity(1);
         }
-      }, 200); // Blink every 200ms
+      }, 200);
     } else {
-      // Smoothly turn off
       let intensity = lightIntensity;
       const fadeInterval = setInterval(() => {
         intensity -= 0.1;
         if (intensity <= 0) {
           clearInterval(fadeInterval);
-          setLightIntensity(0); // Fully turn off
+          setLightIntensity(0);
         } else {
           setLightIntensity(intensity);
         }
-      }, 100); // Gradually decrease every 100ms
+      }, 100);
     }
   }, [isPowered]);
 
@@ -186,28 +194,30 @@ function Lamp({ isPowered }) {
     <group position={[1.5, 0, -2]}>
       <GLBModel path="/models/lamp.glb" position={[0, 1, 0]} scale={[0.01, 0.01, 0.01]} />
       {lightIntensity > 0 && (
-        <pointLight intensity={lightIntensity} distance={5} position={[0, 1.2, 0.2]} color="yellow" />
+        <pointLight
+          intensity={lightIntensity}
+          distance={5}
+          position={[0, 1.2, 0.2]}
+          color="yellow"
+        />
       )}
     </group>
   );
 }
 
-
 function StreetLight() {
   return (
     <group position={[1.5, 0, -2]}>
-      <GLBModel 
-        path="/models/street_light.glb" 
-        position={[-10, 0, -7]} 
-        scale={[1, 1, 1]} 
-        rotation={[0, Math.PI / 4, 0]} // Rotate 45 degrees (PI/4 radians) around the Y-axis
+      <GLBModel
+        path="/models/street_light.glb"
+        position={[-10, 0, -7]}
+        scale={[1, 1, 1]}
+        rotation={[0, Math.PI / 4, 0]}
       />
       <pointLight intensity={10} distance={10} position={[-8, 1, -5]} color="yellow" />
     </group>
   );
 }
-
-
 
 function ControlPanel({ onEnergySourceChange, onDeviceChange, toggleNightMode, isNight }) {
   return (
@@ -247,29 +257,24 @@ function ControlPanel({ onEnergySourceChange, onDeviceChange, toggleNightMode, i
         >
           Solar
         </Text>
-
       </group>
 
-              {/* Toggle Day/Night Button */}
-              <group position={[0, -2, 1]}>
-        <mesh
-          scale={[1, 0.2, 1]}
-          onPointerDown={toggleNightMode}  // Change from onClick to onPointerDown
+      {/* Toggle Day/Night */}
+      <group position={[0, -2, 1]}>
+        <mesh scale={[1, 0.2, 1]} onPointerDown={toggleNightMode}>
+          <boxGeometry />
+          <meshStandardMaterial color={isNight ? "blue" : "yellow"} />
+        </mesh>
+        <Text
+          position={[0, -0.3, 0]}
+          fontSize={0.2}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
         >
-            <boxGeometry />
-            <meshStandardMaterial color={isNight ? "blue" : "yellow"} />
-          </mesh>
-          <Text
-            position={[0, -0.3, 0]}
-            fontSize={0.2}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-          >
-            {isNight ? "Switch to Day" : "Switch to Night"}
-          </Text>
-        </group>
-
+          {isNight ? "Switch to Day" : "Switch to Night"}
+        </Text>
+      </group>
 
       <group position={[2, 0, 0]}>
         <mesh
@@ -311,79 +316,19 @@ function ControlPanel({ onEnergySourceChange, onDeviceChange, toggleNightMode, i
   );
 }
 
-function SpinningCloud({position, scale, rotationSpeed = 0.0001 }) {
+function SpinningCloud({ position, scale, rotationSpeed = 0.0001 }) {
   const cloudRef = useRef();
   const { scene } = useGLTF("/models/cloud.glb");
-
-  // Animate rotation
   useFrame(() => {
     if (cloudRef.current) {
-      cloudRef.current.rotation.y += rotationSpeed; // Spin around Y-axis
+      cloudRef.current.rotation.y += rotationSpeed;
     }
   });
-
   return <primitive ref={cloudRef} object={scene} position={position} scale={scale} />;
 }
 
-// function SpeedControl({ position, onChange }) {
-//   const knobRef = React.useRef();
-//   const [dragging, setDragging] = useState(false);
-//   const [value, setValue] = useState(1);
-
-//   const trackLength = 2; // Length of the slider track
-
-//   const handlePointerMove = (event) => {
-//     if (dragging) {
-//       const knobPosition = Math.min(
-//         Math.max(event.point.x, -trackLength / 2),
-//         trackLength / 2
-//       );
-//       knobRef.current.position.x = knobPosition;
-
-//       // Normalize value to range [0.1, 3] based on knob position
-//       const newValue = ((knobPosition + trackLength / 2) / trackLength) * 2.9 + 0.1;
-//       setValue(newValue);
-//       onChange(newValue);
-//     }
-//   };
-
-//   return (
-//     <group position={position}>
-//       {/* Track */}
-//       <mesh position={[0, 0, 0]}>
-//         <boxGeometry args={[trackLength, 0.1, 0.1]} />
-//         <meshStandardMaterial color="gray" />
-//       </mesh>
-
-//       {/* Knob */}
-//       <mesh
-//         ref={knobRef}
-//         position={[-trackLength / 2, 0, 0]}
-//         onPointerDown={() => setDragging(true)}
-//         onPointerUp={() => setDragging(false)}
-//         onPointerMove={handlePointerMove}
-//         onPointerOut={() => setDragging(false)}
-//         castShadow
-//       >
-//         <boxGeometry args={[0.2, 0.2, 0.2]} />
-//         <meshStandardMaterial color="orange" />
-//       </mesh>
-
-//       {/* Value Display */}
-//       <Text
-//         position={[0, 0.5, 0]}
-//         fontSize={0.2}
-//         color="black"
-//         anchorX="center"
-//         anchorY="middle"
-//       >
-//         Speed: {value.toFixed(2)}x
-//       </Text>
-//     </group>
-//   );
-// }
-const clock = new THREE.Clock();
-const timeOffset = 0;
+// const clock = new THREE.Clock(); // Example clock if needed
+// const timeOffset = 0; // Example offset if needed
 
 function App() {
   const [position, setPosition] = useState(new Vector3());
@@ -391,83 +336,69 @@ function App() {
   const [device, setDevice] = useState(null);
   const [isPowered, setIsPowered] = useState(false);
   const [isNight, setIsNight] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState("#ffcc88"); 
-  // const [speed, setSpeed] = useState(1);
+  const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
 
   const handleEnergySourceChange = (source) => {
     setEnergySource(source);
     if (source === "bike") {
-      setIsPowered(true); // Bike generates power anytime
+      setIsPowered(true);
     } else if (source === "solar") {
-      setIsPowered(!isNight); // Solar only works in the daytime
+      setIsPowered(!isNight);
     } else {
-      setIsPowered(false); // No power
+      setIsPowered(false);
     }
   };
 
-  const handleDeviceChange = (device) => {
-    setDevice(device);
-  };
+  const handleDeviceChange = (d) => setDevice(d);
+  const toggleNightMode = () => setIsNight((prev) => !prev);
 
-  const toggleNightMode = () => {
-    setIsNight((prev) => !prev);
-  };
-
+  // Solar logic
   useEffect(() => {
     if (energySource === "solar") {
       if (isNight) {
         console.log("Solar power is unavailable at night. Devices are turned off.");
-        setIsPowered(false); // Turn off solar power at night
+        setIsPowered(false);
       } else {
         console.log("Daytime detected! Solar power is now active.");
-        setIsPowered(true); // Automatically turn on devices when switching to daytime
+        setIsPowered(true);
       }
     }
-  }, [isNight, energySource]); // Runs when isNight or energySource changes
-  
-    // Smooth transition effect for background
-    useEffect(() => {
-      let targetColor = isNight ? "#0b1d3d" : "#ffcc88"; // Dark blue at night, warm yellow in day
-      let step = 0;
-  
-      const transitionInterval = setInterval(() => {
-        setBackgroundColor((prev) => {
-          // Interpolate between current and target color
-          let newColor = interpolateColor(prev, targetColor, step / 50);
-          step++;
-          if (step >= 50) {
-            clearInterval(transitionInterval);
-            return targetColor;
-          }
-          return newColor;
-        });
-      }, 30); // Gradually update every 30ms for smooth effect
-  
-      return () => clearInterval(transitionInterval);
-    }, [isNight]);
-  
-    // Function to interpolate between two colors smoothly
-    function interpolateColor(color1, color2, factor) {
-      let c1 = new THREE.Color(color1);
-      let c2 = new THREE.Color(color2);
-      let interpolated = c1.lerp(c2, factor);
-      return `#${interpolated.getHexString()}`;
-    }
+  }, [isNight, energySource]);
 
-    const fencePositions = [
-      { position: [-10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },// Left
-      { position: [-10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },// Left
-      { position: [-10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },// Left
-      { position: [10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },// Right
-      { position: [10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },// Right
-      { position: [10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },// Right
-      { position: [-6.6, 0, -10], rotation: [0, 0, 0] },// Back
-      { position: [0.2, 0, -10], rotation: [0, 0, 0] },// Back
-      { position: [6.6, 0, -10], rotation: [0, 0, 0] },// Back
-      { position: [-6.6, 0, 10], rotation: [0, 0, 0] },// Front
-      { position: [0.2, 0, 10], rotation: [0, 0, 0] },// Front
-      { position: [6.6, 0, 10], rotation: [0, 0, 0] },// Front
-    ];
+  // Smooth background transition
+  useEffect(() => {
+    let targetColor = isNight ? "#0b1d3d" : "#ffcc88";
+    let step = 0;
+    const transitionInterval = setInterval(() => {
+      setBackgroundColor((prev) => {
+        let c1 = new THREE.Color(prev);
+        let c2 = new THREE.Color(targetColor);
+        let interpolated = c1.lerp(c2, step / 50);
+        step++;
+        if (step >= 50) {
+          clearInterval(transitionInterval);
+          return targetColor;
+        }
+        return `#${interpolated.getHexString()}`;
+      });
+    }, 30);
+    return () => clearInterval(transitionInterval);
+  }, [isNight]);
+
+  const fencePositions = [
+    { position: [-10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, -10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, 0, 10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, 10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, 10], rotation: [0, 0, 0] },
+  ];
 
   return (
     <div
@@ -478,13 +409,11 @@ function App() {
         overflow: "hidden",
       }}
     >
+      {/* Simple overlay with VR button */}
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           backdropFilter: "blur(3px)",
           display: "flex",
@@ -493,48 +422,48 @@ function App() {
           zIndex: 10,
         }}
       >
-      <button
-        onClick={() => store.enterVR()}
-        style={{
-          padding: "1rem 2rem",
-          fontSize: "1.5rem",
-          backgroundColor: "#ffcc88",
-          border: "none",
-          borderRadius: "8px",
-          color: "black",
-          cursor: "pointer",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = "scale(1.1)";
-          e.target.style.boxShadow = "0 6px 8px rgba(0, 0, 0, 0.2)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = "scale(1)";
-          e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-        }}
-      >
-        Enter VR
-      </button>
-
+        <button
+          onClick={() => store.enterVR()}
+          style={{
+            padding: "1rem 2rem",
+            fontSize: "1.5rem",
+            backgroundColor: "#ffcc88",
+            border: "none",
+            borderRadius: "8px",
+            color: "black",
+            cursor: "pointer",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "scale(1.1)";
+            e.target.style.boxShadow = "0 6px 8px rgba(0, 0, 0, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+            e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+          }}
+        >
+          Enter VR
+        </button>
       </div>
+
       <Canvas camera={{ position: [5, 3, 5] }}>
         <XR store={store}>
-          <OrbitControls/>
+          {/* <OrbitControls /> */}
           <color attach="background" args={[backgroundColor]} />
           <SunLight isNight={isNight} />
           <CelestialBody isNight={isNight} />
           <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
+
           <XROrigin position={position.toArray()} />
-          <TeleportTarget
-            onTeleport={(newPosition) => setPosition(newPosition)}
-          >
+          <TeleportTarget onTeleport={(newPosition) => setPosition(newPosition)}>
             <mesh scale={[20, 1, 20]} position={[0, -0.5, 0]}>
               <boxGeometry />
               <meshStandardMaterial color="#664422" />
             </mesh>
           </TeleportTarget>
+
           <GLBModel
             path="/models/generator.glb"
             position={[0, 1, -4]}
@@ -550,31 +479,35 @@ function App() {
             position={[2, 0, -2]}
             scale={[0.3, 0.3, 0.3]}
           />
-           {fencePositions.map((props, index) => (
-          <Fence key={index} {...props} scale={[0.007, 0.007, 0.007]} />
-          
-        ))}
+
+          {fencePositions.map((props, index) => (
+            <Fence key={index} {...props} scale={[0.007, 0.007, 0.007]} />
+          ))}
+
           <StreetLight />
+
           {/* <SpeedControl
             position={[0, 1, -2]}
             onChange={(newSpeed) => setSpeed(newSpeed)}
           /> */}
+
           {energySource === "bike" && (
             <group>
-            <GLBModel
-              path="/models/bike.glb"
-              position={[-2, 0.1, -4]}
-              scale={[1, 1, 1]}
-              animationSpeed={1}
-            />
-            <GLBModel
-              path="/models/treadmill.glb"
-              position={[-2, 0, -4]}
-              scale={[1.2, 1.2, 1.2]}
-              rotation={[0, Math.PI / 2, 0]}
-            />
+              <GLBModel
+                path="/models/bike.glb"
+                position={[-2, 0.1, -4]}
+                scale={[1, 1, 1]}
+                animationSpeed={1}
+              />
+              <GLBModel
+                path="/models/treadmill.glb"
+                position={[-2, 0, -4]}
+                scale={[1.2, 1.2, 1.2]}
+                rotation={[0, Math.PI / 2, 0]}
+              />
             </group>
           )}
+
           {energySource === "solar" && (
             <GLBModel
               path="/models/solar.glb"
@@ -582,19 +515,20 @@ function App() {
               scale={[1, 1, 1]}
             />
           )}
+
           <ControlPanel
             onEnergySourceChange={handleEnergySourceChange}
             onDeviceChange={handleDeviceChange}
-            toggleNightMode={toggleNightMode} 
+            toggleNightMode={toggleNightMode}
             isNight={isNight}
           />
+
           {device === "lamp" && <Lamp isPowered={isPowered} />}
           {device === "fan" && <Fan isPowered={isPowered} />}
         </XR>
       </Canvas>
     </div>
   );
-  
 }
 
 export default App;
