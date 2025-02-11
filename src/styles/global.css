@@ -1,0 +1,12 @@
+/* src/styles/global.css */
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #222;
+}
+
+.app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
