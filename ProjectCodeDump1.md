@@ -45,7 +45,17 @@ function App() {
   const handleDeviceChange = (d) => setDevice(d);
   const toggleNightMode = () => setIsNight((prev) => !prev);
 
-  // (Additional effects, transitions, etc.)
+  useEffect(() => {
+    if (energySource === "solar") {
+      if (isNight) {
+        console.log("Solar power is unavailable at night. Devices are turned off.");
+        setIsPowered(false);
+      } else {
+        console.log("Daytime detected! Solar power is now active.");
+        setIsPowered(true);
+      }
+    }
+  }, [isNight]);
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
@@ -118,31 +128,68 @@ createRoot(document.getElementById("root")).render(
 
 ```jsx
 // src/components/CelestialBody.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
-const CelestialBody = ({ isNight }) => {
-  const moon = useGLTF("/models/moon.glb").scene;
-  const sun = useGLTF("/models/sun.glb").scene;
-  const [positions, setPositions] = useState({ sun: [0, 100, -100], moon: [-10, -50, -100] });
+function CelestialBody({ isNight }) {
+  const moonRef = useRef();
+  const sunRef = useRef();
+  const [sunPosition, setSunPosition] = useState([0, 100, -100]);
+  const [moonPosition, setMoonPosition] = useState([-10, -50, -100]);
 
   useEffect(() => {
-    const newPositions = isNight
-      ? { sun: [0, -50, -100], moon: [-10, 100, -100] }
-      : { sun: [0, 100, -100], moon: [-10, -50, -100] };
-    setPositions(newPositions);
+    let targetSunY = isNight ? -50 : 100;
+    let targetMoonY = isNight ? 100 : -50;
+    let speed = 10;
+    const interval = setInterval(() => {
+      setSunPosition((prev) => {
+        let newY = prev[1] + (isNight ? -speed : speed);
+        if ((isNight && newY <= targetSunY) || (!isNight && newY >= targetSunY)) {
+          clearInterval(interval);
+          return [prev[0], targetSunY, prev[2]];
+        }
+        return [prev[0], newY, prev[2]];
+      });
+      setMoonPosition((prev) => {
+        let newY = prev[1] + (isNight ? speed : -speed);
+        if ((isNight && newY >= targetMoonY) || (!isNight && newY <= targetMoonY)) {
+          clearInterval(interval);
+          return [prev[0], targetMoonY, prev[2]];
+        }
+        return [prev[0], newY, prev[2]];
+      });
+    }, 50);
+    return () => clearInterval(interval);
   }, [isNight]);
 
   return (
     <group>
-      <primitive object={moon} position={positions.moon} scale={[0.7, 0.7, 0.7]} />
-      <primitive object={sun} position={positions.sun} scale={[0.05, 0.05, 0.05]} />
-      <directionalLight position={positions.sun} intensity={3} color="yellow" castShadow />
+      {/* Moon */}
+      <primitive
+        ref={moonRef}
+        object={useGLTF("/models/moon.glb").scene}
+        position={moonPosition}
+        scale={[0.7, 0.7, 0.7]}
+      />
+      {/* Sun */}
+      <primitive
+        ref={sunRef}
+        object={useGLTF("/models/sun.glb").scene}
+        position={sunPosition}
+        scale={[0.05, 0.05, 0.05]}
+      />
+      <directionalLight
+        position={sunPosition}
+        intensity={3}
+        color="yellow"
+        castShadow
+      />
     </group>
   );
-};
+}
 
 export default CelestialBody;
+
 ```
 
 # components\ControlPanel.jsx
@@ -154,27 +201,86 @@ import { Text } from "@react-three/drei";
 
 const ControlPanel = ({ onEnergySourceChange, onDeviceChange, toggleNightMode, isNight }) => (
   <group position={[0, 3, -3]}>
-    <mesh scale={[1, 0.2, 1]} onPointerDown={() => onEnergySourceChange("bike")}>
-      <boxGeometry />
-      <meshStandardMaterial color="blue" />
-    </mesh>
-    <Text position={[0, -0.3, 0]} fontSize={0.2} color="white">Bike</Text>
-
-    <mesh scale={[1, 0.2, 1]} onPointerDown={() => onEnergySourceChange("solar")}>
-      <boxGeometry />
-      <meshStandardMaterial color="yellow" />
-    </mesh>
-    <Text position={[0, -0.3, 0]} fontSize={0.2} color="white">Solar</Text>
-
-    <mesh scale={[1, 0.2, 1]} onPointerDown={toggleNightMode}>
-      <boxGeometry />
-      <meshStandardMaterial color={isNight ? "blue" : "yellow"} />
-    </mesh>
-    <Text position={[0, -0.3, 0]} fontSize={0.2} color="white">{isNight ? "Switch to Day" : "Switch to Night"}</Text>
+    <group position={[-2, 0, 0]}>
+      <mesh scale={[1, 0.2, 1]} onPointerDown={() => onEnergySourceChange("bike")}>
+        <boxGeometry />
+        <meshStandardMaterial color="blue" />
+      </mesh>
+      <Text
+        position={[0, -0.3, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Bike
+      </Text>
+    </group>
+    <group position={[0, 0, 0]}>
+      <mesh scale={[1, 0.2, 1]} onPointerDown={() => onEnergySourceChange("solar")}>
+        <boxGeometry />
+        <meshStandardMaterial color="blue" />
+      </mesh>
+      <Text
+        position={[0, -0.3, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Solar
+      </Text>
+    </group>
+    <group position={[0, -2, 1]}>
+      <mesh scale={[1, 0.2, 1]} onPointerDown={toggleNightMode}>
+        <boxGeometry />
+        <meshStandardMaterial color={isNight ? "blue" : "yellow"} />
+      </mesh>
+      <Text
+        position={[0, -0.3, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {isNight ? "Switch to Day" : "Switch to Night"}
+      </Text>
+    </group>
+    <group position={[2, 0, 0]}>
+      <mesh scale={[1, 0.2, 1]} onPointerDown={() => onDeviceChange("lamp")}>
+        <boxGeometry />
+        <meshStandardMaterial color="green" />
+      </mesh>
+      <Text
+        position={[0, -0.3, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Lamp
+      </Text>
+    </group>
+    <group position={[4, 0, 0]}>
+      <mesh scale={[1, 0.2, 1]} onPointerDown={() => onDeviceChange("fan")}>
+        <boxGeometry />
+        <meshStandardMaterial color="green" />
+      </mesh>
+      <Text
+        position={[0, -0.3, 0]}
+        fontSize={0.2}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Fan
+      </Text>
+    </group>
   </group>
 );
 
 export default ControlPanel;
+
 ```
 
 # components\Fan.jsx
@@ -267,29 +373,61 @@ export default GLBModel;
 ```jsx
 // src/components/Lamp.jsx
 import React, { useState, useEffect } from "react";
-import { useGLTF } from "@react-three/drei";
+import GLBModel from "./GLBModel";
 
-const Lamp = ({ isPowered }) => {
-  const { scene } = useGLTF("/models/lamp.glb");
+function Lamp({ isPowered }) {
   const [lightIntensity, setLightIntensity] = useState(0);
+  const [blinking, setBlinking] = useState(false);
 
   useEffect(() => {
+    if (blinking) return;
     if (isPowered) {
-      setLightIntensity(1);
+      setBlinking(true);
+      let blinkCount = 0;
+      const blinkInterval = setInterval(() => {
+        setLightIntensity((prev) => (prev > 0 ? 0 : 1));
+        blinkCount++;
+        if (blinkCount >= 4) {
+          clearInterval(blinkInterval);
+          setBlinking(false);
+          setLightIntensity(1);
+        }
+      }, 200);
     } else {
-      setLightIntensity(0);
+      let intensity = lightIntensity;
+      const fadeInterval = setInterval(() => {
+        intensity -= 0.1;
+        if (intensity <= 0) {
+          clearInterval(fadeInterval);
+          setLightIntensity(0);
+        } else {
+          setLightIntensity(intensity);
+        }
+      }, 100);
     }
   }, [isPowered]);
 
   return (
-    <group>
-      <primitive object={scene} position={[0, 1, 0]} scale={[0.01, 0.01, 0.01]} />
-      {lightIntensity > 0 && <pointLight intensity={lightIntensity} distance={5} position={[0, 1.2, 0.2]} color="yellow" />}
+    <group position={[1.5, 0, -2]}>
+      <GLBModel
+        path="/models/lamp.glb"
+        position={[0, 1, 0]}
+        scale={[0.01, 0.01, 0.01]}
+      />
+      {lightIntensity > 0 && (
+        <pointLight
+          intensity={lightIntensity}
+          distance={5}
+          position={[0, 1.2, 0.2]}
+          color="yellow"
+        />
+      )}
     </group>
   );
-};
+}
 
 export default Lamp;
+
 ```
 
 # components\SpinningCloud.jsx
@@ -324,8 +462,8 @@ import { useGLTF } from "@react-three/drei";
 
 const StreetLight = () => {
   return (
-    <group>
-      <primitive object={useGLTF("/models/street_light.glb").scene} position={[-10, 0, -7]} scale={[1, 1, 1]} />
+    <group position={[1.5, 0, -2]}>
+      <primitive object={useGLTF("/models/street_light.glb").scene} position={[-10, 0, -7]} scale={[1, 1, 1]} rotation={[0, Math.PI / 4, 0]} />
       <pointLight intensity={10} distance={10} position={[-8, 1, -5]} color="yellow" />
     </group>
   );
@@ -494,12 +632,16 @@ import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Vector3 } from "three";
 
-// Import scene and component modules
-import Environment from "./Environment";
-import XRScene from "./XRScene";
+// Import your scene components
+import SunLight from "../components/SunLight";
+import CelestialBody from "../components/CelestialBody";
 import SpinningCloud from "../components/SpinningCloud";
-import ControlPanel from "../components/ControlPanel";
 import GLBModel from "../components/GLBModel";
+import Fence from "../components/Fence";
+import StreetLight from "../components/StreetLight";
+import ControlPanel from "../components/ControlPanel";
+import Lamp from "../components/Lamp";
+import Fan from "../components/Fan";
 
 const World = ({
   store,
@@ -514,6 +656,21 @@ const World = ({
   isPowered,
   device,
 }) => {
+  const fencePositions = [
+    { position: [-10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, -10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, 0, 10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, 10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, 10], rotation: [0, 0, 0] },
+  ];
+
   return (
     <Canvas
       camera={{ position: [5, 3, 5] }}
@@ -521,18 +678,16 @@ const World = ({
         gl.xr.enabled = true; // Enable XR on the renderer
       }}
     >
-      {/* Pass the store from App.jsx */}
       <XR store={store}>
-        {/* Set the background color */}
+        {/* Background color */}
         <color attach="background" args={[backgroundColor]} />
 
-        {/* Environment (lights, sky, celestial bodies, etc.) */}
-        <Environment isNight={isNight} />
-
-        {/* A spinning cloud */}
+        {/* Environment */}
+        <SunLight isNight={isNight} />
+        <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
 
-        {/* XR origin and teleport target */}
+        {/* XR Origin and Teleport Target */}
         <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[20, 1, 20]} position={[0, -0.5, 0]}>
@@ -541,10 +696,29 @@ const World = ({
           </mesh>
         </TeleportTarget>
 
-        {/* Main XR scene objects */}
-        <XRScene isNight={isNight} isPowered={isPowered} device={device} />
+        {/* Models */}
+        <GLBModel path="/models/generator.glb" position={[0, 1, -4]} scale={[0.6, 0.6, 0.6]} />
+        <GLBModel path="/models/tree.glb" position={[3, 0, -10]} scale={[3, 3, 3]} />
+        <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
 
-        {/* Control Panel for interactions */}
+        {fencePositions.map((props, index) => (
+          <Fence key={index} {...props} scale={[0.007, 0.007, 0.007]} />
+        ))}
+
+        <StreetLight />
+
+        {/* Conditional Models */}
+        {energySource === "bike" && (
+          <group>
+            <GLBModel path="/models/bike.glb" position={[-2, 0.1, -4]} scale={[1, 1, 1]} animationSpeed={1} />
+            <GLBModel path="/models/treadmill.glb" position={[-2, 0, -4]} scale={[1.2, 1.2, 1.2]} rotation={[0, Math.PI / 2, 0]} />
+          </group>
+        )}
+        {energySource === "solar" && (
+          <GLBModel path="/models/solar.glb" position={[6, 0, -6]} scale={[1, 1, 1]} />
+        )}
+
+        {/* Control Panel */}
         <ControlPanel
           onEnergySourceChange={handleEnergySourceChange}
           onDeviceChange={handleDeviceChange}
@@ -552,31 +726,9 @@ const World = ({
           isNight={isNight}
         />
 
-        {/* Conditional models based on energy source */}
-        {energySource === "bike" && (
-          <group>
-            <GLBModel
-              path="/models/bike.glb"
-              position={[-2, 0.1, -4]}
-              scale={[1, 1, 1]}
-              animationSpeed={1}
-            />
-            <GLBModel
-              path="/models/treadmill.glb"
-              position={[-2, 0, -4]}
-              scale={[1.2, 1.2, 1.2]}
-              rotation={[0, Math.PI / 2, 0]}
-            />
-          </group>
-        )}
-
-        {energySource === "solar" && (
-          <GLBModel
-            path="/models/solar.glb"
-            position={[6, 0, -6]}
-            scale={[1, 1, 1]}
-          />
-        )}
+        {/* Devices */}
+        {device === "lamp" && <Lamp isPowered={isPowered} />}
+        {device === "fan" && <Fan isPowered={isPowered} />}
       </XR>
     </Canvas>
   );
@@ -591,18 +743,35 @@ export default World;
 ```jsx
 // src/scenes/XRScene.jsx
 import React from "react";
-import GLBModel from "/src/components/GLBModel.jsx";
+import GLBModel from "../components/GLBModel";
 import Fence from "../components/Fence";
 import StreetLight from "../components/StreetLight";
 import Lamp from "../components/Lamp";
 import Fan from "../components/Fan";
 
 const XRScene = ({ isNight, isPowered, device }) => {
+  const fencePositions = [
+    { position: [-10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, -10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, 0, 10], rotation: [0, 0, 0] },
+    { position: [0.2, 0, 10], rotation: [0, 0, 0] },
+    { position: [6.6, 0, 10], rotation: [0, 0, 0] },
+  ];
+
   return (
     <>
       <GLBModel path="/models/generator.glb" position={[0, 1, -4]} scale={[0.6, 0.6, 0.6]} />
       <GLBModel path="/models/tree.glb" position={[3, 0, -10]} scale={[3, 3, 3]} />
-      <Fence position={[0, 0, -10]} scale={[0.007, 0.007, 0.007]} />
+      {fencePositions.map((props, index) => (
+        <Fence key={index} {...props} scale={[0.007, 0.007, 0.007]} />
+      ))}
       <StreetLight />
       {device === "lamp" && <Lamp isPowered={isPowered} />}
       {device === "fan" && <Fan isPowered={isPowered} />}
@@ -611,6 +780,7 @@ const XRScene = ({ isNight, isPowered, device }) => {
 };
 
 export default XRScene;
+
 ```
 
 # styles\global.css
