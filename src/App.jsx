@@ -6,10 +6,8 @@ import World from "./scenes/World";
 import VRButton from "./components/VRButton"; // your VR button overlay
 
 function App() {
-  // Create the XR store at the top level.
   const store = useXRControls();
 
-  // Example global state (adjust as needed)
   const [position, setPosition] = useState(new Vector3());
   const [energySource, setEnergySource] = useState(null);
   const [device, setDevice] = useState(null);
@@ -17,7 +15,6 @@ function App() {
   const [isNight, setIsNight] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
 
-  // Handlers (adjust as needed)
   const handleEnergySourceChange = (source) => {
     setEnergySource(source);
     if (source === "bike") setIsPowered(true);
@@ -44,8 +41,6 @@ function App() {
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
       {/* VR Button overlay – it now uses the same store */}
       <VRButton onEnterVR={() => store.enterVR()} />
-
-      {/* Pass the store to World so that XR gets connected */}
       <World
         store={store}
         position={position}
