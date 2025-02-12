@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Vector3 } from "three";
 
+
 import SunLight from "../components/SunLight";
 import CelestialBody from "../components/CelestialBody";
 import SpinningCloud from "../components/SpinningCloud";
@@ -13,6 +14,8 @@ import StreetLight from "../components/StreetLight";
 import ControlPanel from "../components/ControlPanel";
 import Lamp from "../components/Lamp";
 import Fan from "../components/Fan";
+import Valve from "../components/Valve";
+
 
 const World = ({
   store,
@@ -54,6 +57,7 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
+        <Valve/>
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
@@ -71,6 +75,7 @@ const World = ({
         <GLBModel path="/models/generator.glb" position={[0, 1, -4]} scale={[0.6, 0.6, 0.6]} />
         <GLBModel path="/models/tree.glb" position={[3, 0, -10]} scale={[3, 3, 3]} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
+
 
         {fencePositions.map((props, index) => (
           <Fence key={index} {...props} scale={[0.007, 0.007, 0.007]} />
