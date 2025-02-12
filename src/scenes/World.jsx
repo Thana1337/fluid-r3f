@@ -4,7 +4,6 @@ import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Vector3 } from "three";
 
-// Import your scene components
 import SunLight from "../components/SunLight";
 import CelestialBody from "../components/CelestialBody";
 import SpinningCloud from "../components/SpinningCloud";
@@ -47,7 +46,7 @@ const World = ({
     <Canvas
       camera={{ position: [5, 3, 5] }}
       onCreated={({ gl }) => {
-        gl.xr.enabled = true; // Enable XR on the renderer
+        gl.xr.enabled = true; // Enable XR
       }}
     >
       <XR store={store}>
