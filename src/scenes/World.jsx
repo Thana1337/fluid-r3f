@@ -14,7 +14,7 @@ import StreetLight from "../components/StreetLight";
 import ControlPanel from "../components/ControlPanel";
 import Lamp from "../components/Lamp";
 import Fan from "../components/Fan";
-import Valve from "../components/Valve";
+import Pipe from "../components/Pipe";
 
 
 const World = ({
@@ -57,7 +57,7 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        <Valve/>
+        <Pipe/>
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
