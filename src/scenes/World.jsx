@@ -34,18 +34,18 @@ const World = ({
   device,
 }) => {
   const fencePositions = [
-    { position: [-10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, 0, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, 0, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, 0, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-6.6, 0, -10], rotation: [0, 0, 0] },
-    { position: [0.2, 0, -10], rotation: [0, 0, 0] },
-    { position: [6.6, 0, -10], rotation: [0, 0, 0] },
-    { position: [-6.6, 0, 10], rotation: [0, 0, 0] },
-    { position: [0.2, 0, 10], rotation: [0, 0, 0] },
-    { position: [6.6, 0, 10], rotation: [0, 0, 0] },
+    { position: [-10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, -1, -10], rotation: [0, 0, 0] },
+    { position: [0.2, -1, -10], rotation: [0, 0, 0] },
+    { position: [6.6, -1, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, -1, 10], rotation: [0, 0, 0] },
+    { position: [0.2, -1, 10], rotation: [0, 0, 0] },
+    { position: [6.6, -1, 10], rotation: [0, 0, 0] },
   ];
 
   const wallLightPositions = [
@@ -93,17 +93,23 @@ const World = ({
         {/* Models */}
         <Pipe/>
         <Wheels/>
-        <Water position={[9, 0.01, 0]} scale={[0.5, 3, 1]} />;
+        <Water position={[9, -0.5, 0]} scale={[0.5, 3, 1]} />;
+        {/* Env */}
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
-        <GLBModel path="/models/tree.glb" position={[3, 0, -2]} scale={[3, 3, 3]} />
+        <GLBModel path="/models/dumpster_large.glb" position={[-9, 1, 7]} scale={[3, 3, 3]} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
+        <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
+        <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
+        <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
+        <GLBModel path="/models/env_pipe_1.glb" position={[-6, -3, -9]} scale={[2, 2, 2]} />
+        <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
 
         {wallLightPositions.map((props, index) => (
           <Wall_light key={index} {...props} scale={[0.0015, 0.002, 0.002]} /> 
         ))}
         <pointLight position={[0,5,0]} intensity={20} distance={10} color="yellow" castShadow/>
         {fencePositions.map((props, index) => (
-          <Fence key={index} {...props} scale={[3, 3, 3]} />
+          <Fence key={index} {...props} scale={[2.5, 4, 3]} />
         ))}
 
         {/* <StreetLight /> */}
