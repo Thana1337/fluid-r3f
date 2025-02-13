@@ -57,7 +57,7 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        <Pipe/>
+        
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
@@ -70,7 +70,7 @@ const World = ({
             <meshStandardMaterial color="#664422" />
           </mesh>
         </TeleportTarget>
-
+        <Pipe/>
         {/* Models */}
         <GLBModel path="/models/generator.glb" position={[0, 1, -4]} scale={[0.6, 0.6, 0.6]} />
         <GLBModel path="/models/tree.glb" position={[3, 0, -10]} scale={[3, 3, 3]} />
