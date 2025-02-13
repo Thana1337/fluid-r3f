@@ -16,6 +16,8 @@ import Lamp from "../components/Lamp";
 import Fan from "../components/Fan";
 import Pipe from "../components/Pipe";
 import Wall_light from "../components/Wall_light";
+import Wheels from "../components/Wheels";
+import Water from "../components/Water";
 
 
 const World = ({
@@ -82,23 +84,26 @@ const World = ({
         {/* XR Origin and Teleport Target */}
         <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
-          <mesh scale={[20, 1, 20]} position={[0, -0.5, 0]}>
+          <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]}>
             <boxGeometry />
             <meshStandardMaterial color="#664422" />
           </mesh>
         </TeleportTarget>
-        <Pipe/>
+        
         {/* Models */}
+        <Pipe/>
+        <Wheels/>
+        <Water position={[9, 0.01, 0]} scale={[0.5, 3, 1]} />;
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
         <GLBModel path="/models/tree.glb" position={[3, 0, -2]} scale={[3, 3, 3]} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
 
         {wallLightPositions.map((props, index) => (
-          <Wall_light key={index} {...props} scale={[0.0025, 0.003, 0.003]} /> 
+          <Wall_light key={index} {...props} scale={[0.0015, 0.002, 0.002]} /> 
         ))}
         <pointLight position={[0,5,0]} intensity={20} distance={10} color="yellow" castShadow/>
         {fencePositions.map((props, index) => (
-          <Fence key={index} {...props} scale={[3, 2.5, 3]} />
+          <Fence key={index} {...props} scale={[3, 3, 3]} />
         ))}
 
         {/* <StreetLight /> */}
