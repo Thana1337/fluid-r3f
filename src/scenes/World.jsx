@@ -64,6 +64,12 @@ const World = ({
 
   ]
 
+  const pipePosition = [
+    {position:[-6.5, -3, -10]},
+    {position:[0, -3, -10]},
+    {position:[6, -3, -10]},
+  ]
+
   return (
     <Canvas
       camera={{ position: [5, 3, 5] }}
@@ -101,9 +107,11 @@ const World = ({
         <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
-        <GLBModel path="/models/env_pipe_1.glb" position={[-6, -3, -9]} scale={[2, 2, 2]} />
         <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
 
+        {pipePosition.map((props, index) => (
+          <GLBModel path="/models/env_pipe_1.glb" key={index} {...props} scale={[2, 2, 2]} />
+        ))}
         {wallLightPositions.map((props, index) => (
           <Wall_light key={index} {...props} scale={[0.0015, 0.002, 0.002]} /> 
         ))}
