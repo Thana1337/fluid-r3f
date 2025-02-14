@@ -1,0 +1,168 @@
+import React, { useRef, useEffect } from "react";
+// import { Canvas, useFrame } from "@react-three/fiber";
+// import { OrbitControls } from "@react-three/drei";
+// import * as THREE from "three";
+// import "./App.css";
+
+// function Ground() {
+//   return (
+//     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+//       <planeGeometry args={[10, 10]} />
+//       <meshStandardMaterial color="#228B22" />
+//     </mesh>
+//   );
+// }
+
+// function Snow() {
+//   const particles = useRef();
+
+//   const numParticles = 1000;
+//   const positions = new Float32Array(numParticles * 3); // x, y, z for each particle
+//   const velocities = new Float32Array(numParticles * 3);
+
+//   useEffect(() => {
+//     for (let i = 0; i < numParticles; i++) {
+//       positions[i * 3] = (Math.random() - 0.5) * 10; // x
+//       positions[i * 3 + 1] = Math.random() * 5 + 2; // y (start higher)
+//       positions[i * 3 + 2] = (Math.random() - 0.5) * 10; // z
+
+//       velocities[i * 3] = 0; // no x velocity
+//       velocities[i * 3 + 1] = -Math.random() * 0.01; // downward y velocity
+//       velocities[i * 3 + 2] = 0; // no z velocity
+//     }
+//     particles.current.geometry.setAttribute(
+//       "position",
+//       new THREE.BufferAttribute(positions, 3)
+//     );
+//     particles.current.geometry.setAttribute(
+//       "velocity",
+//       new THREE.BufferAttribute(velocities, 3)
+//     );
+//   }, [numParticles]);
+
+//   useFrame(() => {
+//     const posAttr = particles.current.geometry.attributes.position;
+//     const velAttr = particles.current.geometry.attributes.velocity;
+
+//     for (let i = 0; i < numParticles; i++) {
+//       posAttr.array[i * 3 + 1] += velAttr.array[i * 3 + 1]; // Apply velocity to y
+
+//       // Reset position if particle goes too low
+//       if (posAttr.array[i * 3 + 1] < 0) {
+//         posAttr.array[i * 3 + 1] = Math.random() * 5 + 2; // Reset y
+//       }
+//     }
+//     posAttr.needsUpdate = true;
+//   });
+
+//   return (
+//     <points ref={particles}>
+//       <bufferGeometry />
+//       <pointsMaterial
+//         size={0.05}
+//         color="blue"
+//         transparent
+//         opacity={0.7}
+//         depthWrite={false}
+//       />
+//     </points>
+//   );
+// }
+
+
+
+// export default function App() {
+//   return (
+//     <Canvas
+//       shadows
+//       camera={{ position: [5, 5, 5], fov: 50 }}
+//       style={{ width: "100%", height: "100%" }}
+//     >
+//       <ambientLight intensity={0.5} />
+//       <directionalLight
+//         position={[5, 5, 5]}
+//         intensity={1}
+//         castShadow
+//         shadow-mapSize-width={1024}
+//         shadow-mapSize-height={1024}
+//       />
+//       <Ground />
+//       <Snow />
+//       <OrbitControls />
+//     </Canvas>
+//   );
+// }
+
+// import React, { useState } from 'react';
+// import { Canvas} from '@react-three/fiber';
+// import { XR, XROrigin, TeleportTarget, createXRStore } from '@react-three/xr';
+// import { Vector3} from 'three';
+
+
+// const store = createXRStore({
+//   hand: { rayPointer: { rayModel: { color: 'red' } }, teleportPointer: true },
+//   controller: { teleportPointer: true },
+// });
+
+// function PressableButton() {
+//   const [pressed, setPressed] = React.useState(false);
+//   const handlePointerDown = () => setPressed(true);
+//   const handlePointerUp = () => setPressed(false);
+
+//   return (
+//     <mesh
+//       position={[2, 0.5, 0]}
+//       scale={[1, 0.2, 1]}
+//       onPointerDown={handlePointerDown}
+//       onPointerUp={handlePointerUp}
+//     >
+//       <boxGeometry />
+//       <meshStandardMaterial color={pressed ? "red" : "yellow"} />
+//     </mesh>
+//   );
+// }
+
+// function App() {
+//   const [position, setPosition] = useState(new Vector3());
+
+//   return (
+//     <div style={{ width: '100vw', height: '100vh' }}>
+//       <button onClick={() => store.enterVR()}>Enter VR</button>
+//       <Canvas>
+//         <XR store={store}>
+//           <ambientLight />
+//           <directionalLight position={[1, 1, 1]} />
+//           <XROrigin position={position.toArray()} />
+//           <TeleportTarget
+//             onTeleport={(newPosition) => setPosition(newPosition)}
+//           >
+//             <mesh scale={[10, 1, 10]} position={[0, -0.5, 0]}>
+//               <boxGeometry />
+//               <meshBasicMaterial color="green" />
+//             </mesh>
+//           </TeleportTarget>
+//           <PressableButton />
+//         </XR>
+//       </Canvas>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+
+function StreetLight() {
+  return (
+    <group position={[1.5, 0, -2]}>
+      <GLBModel 
+        path="/models/street_light.glb" 
+        position={[-10, 0, -7]} 
+        scale={[1, 1, 1]} 
+        rotation={[0, Math.PI / 4, 0]} // Rotate 45 degrees (PI/4 radians) around the Y-axis
+      />
+      <pointLight intensity={10} distance={100} position={[-8, 1, -5]} color="yellow" />
+    </group>
+  );
+}
