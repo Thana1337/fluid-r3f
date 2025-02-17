@@ -122,7 +122,7 @@ const Particles = ({
   });
 
   return (
-    <points ref={particles}>
+    <points ref={particles} frustumCulled={false}>
       <bufferGeometry />
       <pointsMaterial
         ref={materialRef}

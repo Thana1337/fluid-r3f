@@ -7,15 +7,15 @@ const GameTip = ({ tip, position, visible }) => {
     <Html position={position} center>
       <div style={{
         background: "rgba(0, 0, 0, 0.85)",
-        padding: "20px",               // increased padding for more space
+        padding: "20px",               
         borderRadius: "10px",
         color: "white",
-        fontSize: "24px",              // larger text
+        fontSize: "24px",             
         fontWeight: "bold",
         textAlign: "center",
         textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
-        minWidth: "300px",             // ensures a minimum width
-        whiteSpace: "pre-wrap",        // allows wrapping of text
+        minWidth: "300px",           
+        whiteSpace: "pre-wrap",      
       }}>
         {tip}
       </div>
