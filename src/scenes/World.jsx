@@ -1,5 +1,5 @@
 // src/scenes/World.jsx
-import React from "react";
+import React, {useState} from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Vector3 } from "three";
@@ -70,6 +70,17 @@ const World = ({
     {position:[6, -3, -10]},
   ]
 
+  const [leftParticlesOn, setLeftParticlesOn] = useState(true);
+  const [rightParticlesOn, setRightParticlesOn] = useState(true);
+
+  const toggleLeftParticles = () => {
+    setLeftParticlesOn((prev) => !prev);
+  };
+
+  const toggleRightParticles = () => {
+    setRightParticlesOn((prev) => !prev);
+  };
+
   return (
     <Canvas
       camera={{ position: [5, 3, 5] }}
@@ -97,8 +108,14 @@ const World = ({
         </TeleportTarget>
         
         {/* Models */}
-        <Pipe/>
-        <Wheels/>
+        <Pipe
+          leftParticlesOn={leftParticlesOn}
+          toggleLeftParticles={toggleLeftParticles}
+          rightParticlesOn={rightParticlesOn}
+          toggleRightParticles={toggleRightParticles}
+        />
+        {/* Wheels spin only when their corresponding pipe is on */}
+        <Wheels leftSpin={leftParticlesOn ? 1 : 0} rightSpin={rightParticlesOn ? 1 : 0} />
         <Water position={[9, -0.5, 0]} scale={[0.5, 3, 1]} />;
         {/* Env */}
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
