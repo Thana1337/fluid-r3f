@@ -18,6 +18,8 @@ import Pipe from "../components/Pipe";
 import Wall_light from "../components/Wall_light";
 import Wheels from "../components/Wheels";
 import Water from "../components/Water";
+import City from '../../public/City'
+import { OrbitControls } from "@react-three/drei";
 
 
 const World = ({
@@ -34,18 +36,18 @@ const World = ({
   device,
 }) => {
   const fencePositions = [
-    { position: [-10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-6.6, -1, -10], rotation: [0, 0, 0] },
-    { position: [0.2, -1, -10], rotation: [0, 0, 0] },
-    { position: [6.6, -1, -10], rotation: [0, 0, 0] },
-    { position: [-6.6, -1, 10], rotation: [0, 0, 0] },
-    { position: [0.2, -1, 10], rotation: [0, 0, 0] },
-    { position: [6.6, -1, 10], rotation: [0, 0, 0] },
+    { position: [-10, -3, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -3, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -3, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -3, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -3, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -3, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, -3, -10], rotation: [0, 0, 0] },
+    { position: [0.2, -3, -10], rotation: [0, 0, 0] },
+    { position: [6.6, -3, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, -3, 10], rotation: [0, 0, 0] },
+    { position: [0.2, -3, 10], rotation: [0, 0, 0] },
+    { position: [6.6, -3, 10], rotation: [0, 0, 0] },
   ];
 
   const wallLightPositions = [
@@ -93,20 +95,20 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        
+        <City scale={1} position={[70,0,50]}/>
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
 
         {/* XR Origin and Teleport Target */}
-        <XROrigin position={position.toArray()} />
+        {/* <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]}>
             <boxGeometry />
             <meshStandardMaterial color="#664422" />
           </mesh>
-        </TeleportTarget>
-        
+        </TeleportTarget> */}
+        <OrbitControls/>
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
