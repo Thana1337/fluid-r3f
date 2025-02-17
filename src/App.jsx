@@ -39,8 +39,7 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
-      {/* VR Button overlay – it now uses the same store */}
-      {/* <VRButton onEnterVR={() => store.enterVR()} /> */}
+      <VRButton onEnterVR={() => store.enterVR()} />
       <World
         store={store}
         position={position}

@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Vector3 } from "three";
+import { useGLTF, Preload } from '@react-three/drei';
 
 
 import SunLight from "../components/SunLight";
@@ -19,7 +20,15 @@ import Wall_light from "../components/Wall_light";
 import Wheels from "../components/Wheels";
 import Water from "../components/Water";
 import City from '../../public/City'
+import GameTip from "../components/GameTip";
 import { OrbitControls } from "@react-three/drei";
+
+useGLTF.preload("/models/lamp.glb");
+useGLTF.preload("/models/fan.glb");
+useGLTF.preload("/models/solar.glb");
+useGLTF.preload("/models/bike.glb");
+useGLTF.preload("/models/treadmill.glb");
+
 
 
 const World = ({
@@ -36,18 +45,18 @@ const World = ({
   device,
 }) => {
   const fencePositions = [
-    { position: [-10, -3, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, -3, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [-10, -3, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -3, -6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -3, 0.2], rotation: [0, Math.PI / 2, 0] },
-    { position: [10, -3, 6.5], rotation: [0, Math.PI / 2, 0] },
-    { position: [-6.6, -3, -10], rotation: [0, 0, 0] },
-    { position: [0.2, -3, -10], rotation: [0, 0, 0] },
-    { position: [6.6, -3, -10], rotation: [0, 0, 0] },
-    { position: [-6.6, -3, 10], rotation: [0, 0, 0] },
-    { position: [0.2, -3, 10], rotation: [0, 0, 0] },
-    { position: [6.6, -3, 10], rotation: [0, 0, 0] },
+    { position: [-10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [-10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
+    { position: [10, -1, 6.5], rotation: [0, Math.PI / 2, 0] },
+    { position: [-6.6, -1, -10], rotation: [0, 0, 0] },
+    { position: [0.2, -1, -10], rotation: [0, 0, 0] },
+    { position: [6.6, -1, -10], rotation: [0, 0, 0] },
+    { position: [-6.6, -1, 10], rotation: [0, 0, 0] },
+    { position: [0.2, -1, 10], rotation: [0, 0, 0] },
+    { position: [6.6, -1, 10], rotation: [0, 0, 0] },
   ];
 
   const wallLightPositions = [
@@ -83,6 +92,13 @@ const World = ({
     setRightParticlesOn((prev) => !prev);
   };
 
+  const wheelsIntensity =
+  leftParticlesOn && rightParticlesOn
+    ? 1
+    : !leftParticlesOn && !rightParticlesOn
+    ? 0
+    : 0.5;
+
   return (
     <Canvas
       camera={{ position: [5, 3, 5] }}
@@ -90,25 +106,25 @@ const World = ({
         gl.xr.enabled = true; // Enable XR
       }}
     >
+      <Preload all />
       <XR store={store}>
         {/* Background color */}
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        <City scale={1} position={[70,0,50]}/>
+        <City scale={1.5} position={[75,-1,50]}/>
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
 
         {/* XR Origin and Teleport Target */}
-        {/* <XROrigin position={position.toArray()} />
+        <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]}>
             <boxGeometry />
             <meshStandardMaterial color="#664422" />
           </mesh>
-        </TeleportTarget> */}
-        <OrbitControls/>
+        </TeleportTarget>
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
@@ -127,30 +143,34 @@ const World = ({
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
+        <GLBModel path="/models/sleeping_bag.glb" position={[0, 0, 6]} scale={0.02} rotation={[0, Math.PI / 2 ,0]}/>
+
 
         {pipePosition.map((props, index) => (
           <GLBModel path="/models/env_pipe_1.glb" key={index} {...props} scale={[2, 2, 2]} />
         ))}
         {wallLightPositions.map((props, index) => (
-          <Wall_light key={index} {...props} scale={[0.0015, 0.002, 0.002]} /> 
+          <Wall_light 
+            key={index} 
+            {...props} 
+            scale={[0.0015, 0.002, 0.002]} 
+            intensity={wheelsIntensity} 
+          />
         ))}
         <pointLight position={[0,5,0]} intensity={20} distance={10} color="yellow" castShadow/>
         {fencePositions.map((props, index) => (
           <Fence key={index} {...props} scale={[2.5, 4, 3]} />
         ))}
 
-        {/* <StreetLight /> */}
+
 
         {/* Conditional Models */}
-        {energySource === "bike" && (
-          <group>
-            <GLBModel path="/models/bike.glb" position={[-2, 0.1, -4]} scale={[1, 1, 1]} animationSpeed={1} />
-            <GLBModel path="/models/treadmill.glb" position={[-2, 0, -4]} scale={[1.2, 1.2, 1.2]} rotation={[0, Math.PI / 2, 0]} />
-          </group>
-        )}
-        {energySource === "solar" && (
-          <GLBModel path="/models/solar.glb" position={[6, 0, -6]} scale={[1, 1, 1]} />
-        )}
+        <group>
+          <GLBModel path="/models/bike.glb" position={[-2, 0.1, -4]} scale={[1, 1, 1]} animationSpeed={energySource === "bike" ? 1 : 0.2} />
+          <GLBModel path="/models/treadmill.glb" position={[-2, 0, -4]} scale={[1.2, 1.2, 1.2]} rotation={[0, Math.PI / 2, 0]} />
+        </group>
+        
+        <GLBModel path="/models/solar.glb" position={[0, 6.5, -11]} scale={1.5} />
 
         {/* Control Panel */}
         <ControlPanel
@@ -159,6 +179,28 @@ const World = ({
           toggleNightMode={toggleNightMode}
           isNight={isNight}
         />
+
+        <GameTip
+          tip="You are getting power from this treadmill!"
+          position={[-3, 2, -4]} // adjust position as needed
+          visible={energySource === "bike"}  // conditionally show the tip
+        />
+        <GameTip
+          tip={
+            energySource === "solar" && isNight && !isPowered
+              ? "Solar will only work when the sun is up!"
+              : "You are getting power from the solarpanel!"
+          }
+          position={[0, 10, -14]}
+          visible={energySource === "solar"} 
+        />
+        <GameTip
+          tip="Your device is not receiving any power. Please check your power source!"
+          position={[1  , 1, -1]} 
+          visible={device && !isPowered}  
+        />
+
+
 
         {/* Devices */}
         {device === "lamp" && <Lamp isPowered={isPowered} />}
