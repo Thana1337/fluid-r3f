@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const Particles = ({
+  active = true, // controls whether particles are visible
   numParticles = 100,
   particleSize = 0.05,
   flowDirection = [1, 0, 0],
@@ -16,23 +17,24 @@ const Particles = ({
   steamAcceleration = 0.001,
 }) => {
   const particles = useRef();
+  const materialRef = useRef();
 
-  // Store initial base position so it remains fixed
+  // Store initial base position so it remains fixed.
   const initialBase = useRef(new THREE.Vector3(...base));
 
   const positions = useRef(new Float32Array(numParticles * 3));
-  const velocities = useRef(new Float32Array(numParticles * 3)); // note: only storing 3 components per particle
+  const velocities = useRef(new Float32Array(numParticles * 3));
 
   // Identify the main flow axis (nonzero component in flowDirection)
   const flowAxis = flowDirection.findIndex((val) => val !== 0);
 
   useEffect(() => {
     for (let i = 0; i < numParticles; i++) {
-      // Set the main flow axis position
+      // Set the main flow axis position.
       positions.current[i * 3 + flowAxis] =
         Math.random() * spread + initialBase.current.getComponent(flowAxis);
 
-      // Set the other two axes positions (a little random offset)
+      // Set the other two axes positions (with a small random offset).
       for (let axis = 0; axis < 3; axis++) {
         if (axis !== flowAxis) {
           positions.current[i * 3 + axis] =
@@ -40,11 +42,11 @@ const Particles = ({
         }
       }
 
-      // Use particleSpeed for horizontal velocity
+      // Set horizontal velocity based on particleSpeed.
       velocities.current[i * 3 + flowAxis] =
         Math.abs(Math.random() * particleSpeed) * flowDirection[flowAxis];
 
-      // Set the velocities on the other axes to 0 initially
+      // Set the velocities on the other axes to 0.
       for (let axis = 0; axis < 3; axis++) {
         if (axis !== flowAxis) {
           velocities.current[i * 3 + axis] = 0;
@@ -63,35 +65,38 @@ const Particles = ({
   }, [numParticles, particleSpeed, spread, flowAxis]);
 
   useFrame(() => {
+    // Smoothly update the material's opacity.
+    // Lower the factor (e.g. 0.01) for a slower fade.
+    const targetOpacity = active ? 0.7 : 0; 
+    if (materialRef.current) {
+      materialRef.current.opacity += (targetOpacity - materialRef.current.opacity) * 0.0001;
+    }
+
     const posAttr = particles.current.geometry.attributes.position;
     const velAttr = particles.current.geometry.attributes.velocity;
 
-    // Define a default speed that our original tuning was based on.
+    // Define a default particle speed for scaling purposes.
     const defaultParticleSpeed = 0.05;
-    // Calculate scaling factor. If particleSpeed is higher than default,
-    // then speedFactor > 1.
     const speedFactor = particleSpeed / defaultParticleSpeed;
 
-    // Scale vertical acceleration based on speed so fast particles curve more.
+    // Adjust vertical acceleration and curve threshold based on speed.
     const adjustedWaterAcc = waterAcceleration * speedFactor;
     const adjustedSteamAcc = steamAcceleration * speedFactor;
-
-    // Also, lower the threshold so fast particles begin curving sooner.
     const adjustedCurveThreshold = curveThreshold / speedFactor;
 
     for (let i = 0; i < numParticles; i++) {
       const mainIndex = i * 3 + flowAxis;
-      // Update horizontal position
+      // Update horizontal position.
       posAttr.array[mainIndex] += velAttr.array[mainIndex];
 
-      // Calculate traveled distance from initial base along the flow axis.
+      // Calculate the distance traveled along the flow axis.
       const traveled = Math.abs(
         posAttr.array[mainIndex] - initialBase.current.getComponent(flowAxis)
       );
 
-      // When the particle has traveled beyond the adjusted threshold, apply vertical acceleration.
+      // Apply vertical acceleration if beyond the threshold.
       if (traveled > adjustedCurveThreshold) {
-        const yIndex = i * 3 + 1; // assuming y is the vertical axis
+        const yIndex = i * 3 + 1; // assuming y is vertical
         const verticalAcc =
           particleType === "water" ? adjustedWaterAcc : adjustedSteamAcc;
         velAttr.array[yIndex] += verticalAcc;
@@ -120,10 +125,11 @@ const Particles = ({
     <points ref={particles}>
       <bufferGeometry />
       <pointsMaterial
+        ref={materialRef}
         size={particleSize}
         color={color}
         transparent
-        opacity={0.7}
+        opacity={active ? 0.7 : 0} // initial opacity set based on active state
         depthWrite={false}
       />
     </points>
