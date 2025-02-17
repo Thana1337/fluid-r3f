@@ -1,12 +1,12 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo  } from "react";
 import { Vector3 } from "three";
 import useXRControls from "./hooks/useXRControls";
 import World from "./scenes/World";
-import VRButton from "./components/VRButton"; // your VR button overlay
+import VRButton from "./components/VRButton"; 
 
 function App() {
-  const store = useXRControls();
+  const store = useMemo(() => useXRControls(), []);
 
   const [position, setPosition] = useState(new Vector3());
   const [energySource, setEnergySource] = useState(null);

@@ -98,6 +98,7 @@ const World = ({
     : !leftParticlesOn && !rightParticlesOn
     ? 0
     : 0.5;
+    
 
   return (
     <Canvas
@@ -122,7 +123,7 @@ const World = ({
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]}>
             <boxGeometry />
-            <meshStandardMaterial color="#664422" />
+            <meshStandardMaterial color="#664422" /> 
           </mesh>
         </TeleportTarget>
         {/* Models */}
@@ -159,7 +160,27 @@ const World = ({
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
-        <GLBModel path="/models/sleeping_bag.glb" position={[0, 0, 6]} scale={0.02} rotation={[0, Math.PI / 2 ,0]}/>
+
+        {/* Sleeping bag as day/night toggle with larger hit area */}
+        <group onPointerDown={toggleNightMode}>
+          <mesh position={[0, 0, 6]} scale={[4, 1, 2]}>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshBasicMaterial opacity={0} transparent />
+          </mesh>
+          {/* Sleeping bag model */}
+          <GLBModel 
+            path="/models/sleeping_bag.glb" 
+            position={[0, 0, 6]} 
+            scale={0.02} 
+            rotation={[0, Math.PI / 2, 0]} 
+          />
+        </group>
+        {/* Display a tip near the sleeping bag */}
+        <GameTip 
+          tip="Tap the sleeping bag to toggle day/night" 
+          position={[0, 0.5, 6]} 
+          visible={true} 
+        />
 
 
         {pipePosition.map((props, index) => (
