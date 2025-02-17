@@ -135,6 +135,22 @@ const World = ({
         {/* Wheels spin only when their corresponding pipe is on */}
         <Wheels leftSpin={leftParticlesOn ? 1 : 0} rightSpin={rightParticlesOn ? 1 : 0} />
         <Water position={[9, -0.5, 0]} scale={[0.5, 3, 1]} />;
+        <group>
+        <GLBModel path="/models/sewer_opening.glb" position={[8, -0.5, -9.6]} scale={[1.5,0.2,1]} />
+        <GLBModel path="/models/sewer_opening.glb" position={[8.3, -0.5, 9.6]} scale={[1.5,0.2,1]} />
+        <mesh scale={[5, 0.7, 0.01]} position={[8, -0.4, -9.7]}>
+            <boxGeometry />
+            <meshStandardMaterial color="black" />
+        </mesh>
+        </group>
+
+
+        {/* <mesh scale={[10, 0.1, 0.1]} position={[0, 0, 0]}>
+            <boxGeometry />
+            <meshStandardMaterial color="black" />
+        </mesh> */}
+
+
         {/* Env */}
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
         <GLBModel path="/models/dumpster_large.glb" position={[-9, 1, 7]} scale={[3, 3, 3]} />
@@ -181,9 +197,9 @@ const World = ({
         />
 
         <GameTip
-          tip="You are getting power from this treadmill!"
-          position={[-3, 2, -4]} // adjust position as needed
-          visible={energySource === "bike"}  // conditionally show the tip
+          tip="You are getting power from the treadmill!"
+          position={[-3, 2, -4]} 
+          visible={energySource === "bike"}  
         />
         <GameTip
           tip={
