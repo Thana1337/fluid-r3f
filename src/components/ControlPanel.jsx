@@ -34,7 +34,7 @@ const ControlPanel = ({ onEnergySourceChange, onDeviceChange, toggleNightMode, i
         Solar
       </Text>
     </group>
-    <group position={[0, -2, 1]}>
+    {/* <group position={[0, -2, 1]}>
       <mesh scale={[1, 0.2, 1]} onPointerDown={toggleNightMode}>
         <boxGeometry />
         <meshStandardMaterial color={isNight ? "blue" : "yellow"} />
@@ -48,7 +48,7 @@ const ControlPanel = ({ onEnergySourceChange, onDeviceChange, toggleNightMode, i
       >
         {isNight ? "Switch to Day" : "Switch to Night"}
       </Text>
-    </group>
+    </group> */}
     <group position={[2, 0, 0]}>
       <mesh scale={[1, 0.2, 1]} onPointerDown={() => onDeviceChange("lamp")}>
         <boxGeometry />
