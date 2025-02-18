@@ -37,16 +37,16 @@ function Lamp({ isPowered }) {
   return (
     <group position={[2.7, 0, -2.2]}>
       <GLBModel
-        path="/models/lamp.glb"
-        position={[0, 1, 0]}
-        scale={[0.015, 0.015, 0.015]}
+        path="/models/simple_low_poly_table_lamp.glb"
+        position={[0, 0.98, 0]}
+        scale={0.0005}
         rotation={[0,-Math.PI /4 ,0]}
       />
       {lightIntensity > 0 && (
         <pointLight
           intensity={lightIntensity}
           distance={5}
-          position={[0, 1.2, 0.2]}
+          position={[0, 1.4, 0.2]}
           color="yellow"
         />
       )}
