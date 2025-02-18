@@ -104,10 +104,12 @@ const World = ({
 
   return (
     <Canvas
-      camera={{ position: [5, 3, 5] }}
-      onCreated={({ gl }) => {
-        gl.xr.enabled = true; // Enable XR
-      }}
+    shadows
+    camera={{ position: [5, 3, 5] }}
+    onCreated={({ gl }) => {
+      gl.xr.enabled = true;
+      
+    }}
     >
       <Preload all />
       <XR store={store}>
@@ -123,7 +125,7 @@ const World = ({
         {/* XR Origin and Teleport Target */}
         <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
-          <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]}>
+          <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]} receiveShadow castShadow >
             <boxGeometry />
             <meshStandardMaterial color="#664422" /> 
           </mesh>
@@ -158,7 +160,7 @@ const World = ({
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
         <GLBModel path="/models/dumpster_large.glb" position={[-9, 1, 7]} scale={[3, 3, 3]} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
-        <GLBModel path="/models/low_poly_office_chair.glb" position={[2, 0, -1]} scale={0.7} rotation={[0,-Math.PI/1.5,0]} />
+        <GLBModel path="/models/low_poly_computer_chair.glb" position={[2, 0, -1]} scale={0.35} rotation={[0,-Math.PI/1.5,0]}/>
         <GLBModel path="/models/laptop.glb" position={[1.7, 1, -1.7]} scale={[0.5, 0.5, 0.5]} />
         <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
