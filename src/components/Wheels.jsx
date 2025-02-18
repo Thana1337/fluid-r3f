@@ -15,7 +15,7 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
         // If the difference is very small, snap to target.
         if (Math.abs(diff) < 0.01) return leftTarget;
         // Increment the speed by a fraction of the difference.
-        return current + diff * 0.05;
+        return current + diff * 0.003;
       });
       frameId = requestAnimationFrame(updateLeftSpeed);
     };
@@ -30,7 +30,7 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
       setRightSpeed((current) => {
         const diff = rightTarget - current;
         if (Math.abs(diff) < 0.01) return rightTarget;
-        return current + diff * 0.05;
+        return current + diff * 0.005;
       });
       frameId = requestAnimationFrame(updateRightSpeed);
     };

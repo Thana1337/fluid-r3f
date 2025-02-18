@@ -69,8 +69,10 @@ const Particles = ({
     // Lower the factor (e.g. 0.01) for a slower fade.
     const targetOpacity = active ? 0.7 : 0; 
     if (materialRef.current) {
-      materialRef.current.opacity += (targetOpacity - materialRef.current.opacity) * 0.0001;
-    }
+      materialRef.current.opacity = THREE.MathUtils.lerp(
+        materialRef.current.opacity,
+        targetOpacity,
+        0.01)};
 
     const posAttr = particles.current.geometry.attributes.position;
     const velAttr = particles.current.geometry.attributes.velocity;
@@ -129,7 +131,6 @@ const Particles = ({
         size={particleSize}
         color={color}
         transparent
-        opacity={active ? 0.7 : 0} // initial opacity set based on active state
         depthWrite={false}
       />
     </points>
