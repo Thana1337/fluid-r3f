@@ -78,9 +78,9 @@ const World = ({
   ]
 
   const pipePosition = [
-    {position:[-6.5, -3, -10]},
-    {position:[0, -3, -10]},
-    {position:[6, -3, -10]},
+    {position:[-6.5, -3, -10.2]},
+    {position:[0, -3, -10.2]},
+    {position:[6, -3, -10.2]},
   ]
 
   const [leftParticlesOn, setLeftParticlesOn] = useState(true);
@@ -125,7 +125,7 @@ const World = ({
         {/* XR Origin and Teleport Target */}
         <XROrigin position={position.toArray()} />
         <TeleportTarget onTeleport={onTeleport}>
-          <mesh scale={[19, 1, 20]} position={[-3, -0.5, 0]} receiveShadow castShadow >
+          <mesh scale={[17, 1, 19.5]} position={[-1.3, -0.5, 0]} receiveShadow castShadow >
             <boxGeometry />
             <meshStandardMaterial color="#664422" /> 
           </mesh>
@@ -157,15 +157,15 @@ const World = ({
 
 
         {/* Env */}
-        <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
-        <GLBModel path="/models/dumpster_large.glb" position={[-9, 1, 7]} scale={[3, 3, 3]} />
+        <GLBModel path="/models/electric_distribution_box.glb" position={[0, 1.5, -9.4]} scale={2.5} animationSpeed={0} />
+        <GLBModel path="/models/dumpster_large.glb" position={[-9, .8, 7]} scale={2.5} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
         <GLBModel path="/models/low_poly_computer_chair.glb" position={[2, 0, -1]} scale={0.35} rotation={[0,-Math.PI/1.5,0]}/>
         <GLBModel path="/models/laptop.glb" position={[1.7, 1, -1.7]} scale={[0.5, 0.5, 0.5]} />
         <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
-        <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
-        <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
+        <GLBModel path="/models/env_pipe.glb" position={[6.5, -0.1, 7.5]} scale={[1, 1, 1]} />
+        <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9.9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
 
         {/* Sleeping bag as day/night toggle with larger hit area */}
         <SleepingBagWithTip toggleNightMode={toggleNightMode} />
