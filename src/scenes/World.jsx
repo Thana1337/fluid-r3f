@@ -22,6 +22,8 @@ import Water from "../components/Water";
 import City from '../../public/City'
 import GameTip from "../components/GameTip";
 import { OrbitControls } from "@react-three/drei";
+import SleepingBagWithTip from "../components/SleepingBagWithTip";
+import InteractiveWithTip from "../components/InteractiveWithTip";
 
 useGLTF.preload("/models/lamp.glb");
 useGLTF.preload("/models/fan.glb");
@@ -156,31 +158,15 @@ const World = ({
         <GLBModel path="/models/generator.glb" position={[0, 1.5, -9]} scale={[1, 1, 0.6]} />
         <GLBModel path="/models/dumpster_large.glb" position={[-9, 1, 7]} scale={[3, 3, 3]} />
         <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
+        <GLBModel path="/models/low_poly_office_chair.glb" position={[2, 0, -1]} scale={0.7} rotation={[0,-Math.PI/1.5,0]} />
+        <GLBModel path="/models/laptop.glb" position={[1.7, 1, -1.7]} scale={[0.5, 0.5, 0.5]} />
         <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
         <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[5, 0, 7]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
 
         {/* Sleeping bag as day/night toggle with larger hit area */}
-        <group onPointerDown={toggleNightMode}>
-          <mesh position={[0, 0, 6]} scale={[4, 1, 2]}>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshBasicMaterial opacity={0} transparent />
-          </mesh>
-          {/* Sleeping bag model */}
-          <GLBModel 
-            path="/models/sleeping_bag.glb" 
-            position={[0, 0, 6]} 
-            scale={0.02} 
-            rotation={[0, Math.PI / 2, 0]} 
-          />
-        </group>
-        {/* Display a tip near the sleeping bag */}
-        <GameTip 
-          tip="Tap the sleeping bag to toggle day/night" 
-          position={[0, 0.5, 6]} 
-          visible={true} 
-        />
+        <SleepingBagWithTip toggleNightMode={toggleNightMode} />
 
 
         {pipePosition.map((props, index) => (
@@ -201,21 +187,45 @@ const World = ({
 
 
 
-        {/* Conditional Models */}
-        <group>
-          <GLBModel path="/models/bike.glb" position={[-2, 0.1, -4]} scale={[1, 1, 1]} animationSpeed={energySource === "bike" ? 1 : 0.2} />
-          <GLBModel path="/models/treadmill.glb" position={[-2, 0, -4]} scale={[1.2, 1.2, 1.2]} rotation={[0, Math.PI / 2, 0]} />
-        </group>
-        
-        <GLBModel path="/models/solar.glb" position={[0, 6.5, -11]} scale={1.5} />
+        {/* ===== Direct Energy Source Selection ===== */}
+        <InteractiveWithTip
+          tip="Tap here to select Bike"
+          tipPosition={[-2, 0.1, -4]} // Tip position (adjust as needed)
+          onClick={() => handleEnergySourceChange("bike")}
+        >
+          <GLBModel 
+            path="/models/bike.glb" 
+            position={[-2, 0.1, -4]} 
+            scale={[1, 1, 1]} 
+            animationSpeed={energySource === "bike" ? 1 : 0.2} 
+          />
+          <GLBModel 
+            path="/models/treadmill.glb" 
+            position={[-2, 0, -4]} 
+            scale={[1.2, 1.2, 1.2]} 
+            rotation={[0, Math.PI / 2, 0]} 
+          />
+        </InteractiveWithTip>
+
+        <InteractiveWithTip
+          tip="Tap here to select Solar"
+          tipPosition={[0, 6.5, -11]} // Adjust the tip position if necessary
+          onClick={() => handleEnergySourceChange("solar")}
+        >
+          <GLBModel 
+            path="/models/solar.glb" 
+            position={[0, 6.5, -11]} 
+            scale={1.5} 
+          />
+        </InteractiveWithTip>
 
         {/* Control Panel */}
-        <ControlPanel
+        {/* <ControlPanel
           onEnergySourceChange={handleEnergySourceChange}
           onDeviceChange={handleDeviceChange}
           toggleNightMode={toggleNightMode}
           isNight={isNight}
-        />
+        /> */}
 
         <GameTip
           tip="You are getting power from the treadmill!"
@@ -232,16 +242,16 @@ const World = ({
           visible={energySource === "solar"} 
         />
         <GameTip
-          tip="Your device is not receiving any power. Please check your power source!"
-          position={[1  , 1, -1]} 
-          visible={device && !isPowered}  
+          tip="Your devices is not receiving any power. Please check your power source!"
+          position={[1.9, 1.7, -2]} 
+          visible={!isPowered}  
         />
 
 
 
         {/* Devices */}
-        {device === "lamp" && <Lamp isPowered={isPowered} />}
-        {device === "fan" && <Fan isPowered={isPowered} />}
+        <Lamp isPowered={isPowered} />
+        <Fan isPowered={isPowered} />
       </XR>
     </Canvas>
   );

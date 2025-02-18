@@ -31,7 +31,7 @@ const Fan = ({ isPowered }) => {
     }
   }, [animationSpeed, actions]);
 
-  return <primitive object={scene} position={[1.5, 1, -2]} scale={[1, 1, 1]} />;
+  return <primitive object={scene} position={[2.5, 1, -1.7]} scale={[1, 1, 1]} rotation={[0,-Math.PI /4 ,0]} />;
 };
 
 export default Fan;
