@@ -29,7 +29,7 @@ const InteractiveWithTip = ({ tip, tipPosition, onClick, children }) => {
   });
 
   return (
-    <group onPointerDown={onClick}>
+    <group onPointerDown={onClick} pointerEventsType={{ deny: 'grab' }}>
       {children}
       <GameTip tip={tip} position={tipPosition} visible={visible} />
     </group>

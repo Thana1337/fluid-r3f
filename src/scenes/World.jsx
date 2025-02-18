@@ -190,7 +190,7 @@ const World = ({
         {/* ===== Direct Energy Source Selection ===== */}
         <InteractiveWithTip
           tip="Tap here to select Bike"
-          tipPosition={[-2, 0.1, -4]} // Tip position (adjust as needed)
+          tipPosition={[-2, 0.1, -4]} 
           onClick={() => handleEnergySourceChange("bike")}
         >
           <GLBModel 
@@ -214,7 +214,7 @@ const World = ({
         >
           <GLBModel 
             path="/models/solar.glb" 
-            position={[0, 6.5, -11]} 
+            position={[0, 6.1, -11.2]} 
             scale={1.5} 
           />
         </InteractiveWithTip>
@@ -229,7 +229,7 @@ const World = ({
 
         <GameTip
           tip="You are getting power from the treadmill!"
-          position={[-3, 2, -4]} 
+          position={[-2, 2, -4]} 
           visible={energySource === "bike"}  
         />
         <GameTip
