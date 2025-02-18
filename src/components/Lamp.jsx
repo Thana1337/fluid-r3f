@@ -35,11 +35,12 @@ function Lamp({ isPowered }) {
   }, [isPowered]);
 
   return (
-    <group position={[1.5, 0, -2]}>
+    <group position={[2.7, 0, -2.2]}>
       <GLBModel
         path="/models/lamp.glb"
         position={[0, 1, 0]}
-        scale={[0.01, 0.01, 0.01]}
+        scale={[0.015, 0.015, 0.015]}
+        rotation={[0,-Math.PI /4 ,0]}
       />
       {lightIntensity > 0 && (
         <pointLight
