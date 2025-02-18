@@ -219,14 +219,6 @@ const World = ({
           />
         </InteractiveWithTip>
 
-        {/* Control Panel */}
-        {/* <ControlPanel
-          onEnergySourceChange={handleEnergySourceChange}
-          onDeviceChange={handleDeviceChange}
-          toggleNightMode={toggleNightMode}
-          isNight={isNight}
-        /> */}
-
         <GameTip
           tip="You are getting power from the treadmill!"
           position={[-2, 2, -4]} 
@@ -246,8 +238,6 @@ const World = ({
           position={[1.9, 1.7, -2]} 
           visible={!isPowered}  
         />
-
-
 
         {/* Devices */}
         <Lamp isPowered={isPowered} />
