@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import GLBModel from "./GLBModel";
+import ElectricalBox from "./ElectricalBox";
 
 const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
   // Local state for the current spin speeds
@@ -42,7 +43,7 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
     <>
       {/* Right Wheel controlled by the right pipe */}
       <GLBModel
-        path="models/wheel.glb"
+        path="models/wheel_gen_right.glb"
         animationSpeed={rightSpeed}
         position={[8, 2, -5]}
         scale={[1, 1, 1]}
@@ -55,7 +56,7 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
       />
       {/* Left Wheel controlled by the left pipe */}
       <GLBModel
-        path="models/wheel.glb"
+        path="models/wheel_gen_right.glb"
         animationSpeed={leftSpeed}
         position={[-8, 2, -5]}
         scale={[1, 1, 1]}

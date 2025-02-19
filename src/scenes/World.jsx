@@ -62,7 +62,9 @@ const World = ({
   ];
 
   const wallLightPositions = [
+    { position: [8, 4, -9.6], rotation: [0, 0, 0]},
     { position: [0, 4, -9.6], rotation: [0, 0, 0]},
+    { position: [-8, 4, -9.6], rotation: [0, 0, 0]},
     { position: [-8, 4, 9.7], rotation: [0, Math.PI / 1, 0]},
     { position: [8, 4, 9.7], rotation: [0, Math.PI / 1, 0]},
     { position: [0, 4, 9.7], rotation: [0, Math.PI / 1, 0]},

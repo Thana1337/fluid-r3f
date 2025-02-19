@@ -1,28 +1,51 @@
 // src/components/Lever.jsx
 import React, { useEffect, useRef } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei";
+import * as THREE from "three";
+import GLBModel from "./GLBModel";
 
 const Lever = ({ isOn, toggle }) => {
-  const group = useRef();
-  // Load the lever model which includes the animation
-  const { scene, animations } = useGLTF("/models/lever.glb");
-  // Bind animations to the model's group
-  const { actions } = useAnimations(animations, group);
+  const actionsRef = useRef(null);
+
+  const handleActionsLoaded = (actions) => {
+    actionsRef.current = actions;
+  };
 
   useEffect(() => {
-    if (!actions || !actions["Animation"]) return;
-    actions["Animation"].reset();
-    actions["Animation"].timeScale = isOn ? 1 : -1;
-    actions["Animation"].play();
-  }, [isOn, actions]);
+    if (!actionsRef.current) return;
+    const availableKeys = Object.keys(actionsRef.current);
+
+    const action =
+      actionsRef.current["CubeAction"] || actionsRef.current[availableKeys[0]];
+    if (!action) return;
+
+    action.setLoop(THREE.LoopOnce, 0);
+    action.clampWhenFinished = true;
+    
+    const clipDuration = action.getClip().duration;
+    
+    const speed = 3; 
+
+    if (isOn && action.time >= clipDuration) {
+      action.time = 0;
+    }
+    if (!isOn && action.time <= 0) {
+      action.time = clipDuration;
+    }
+    action.timeScale = isOn ? speed : -speed;
+    action.paused = false;
+    action.play();
+  }, [isOn]);
 
   return (
-    <primitive
-      ref={group}
-      object={scene}
-      onPointerDown={toggle}
-      dispose={null}
-    />
+    <group onPointerDown={toggle}>
+      <GLBModel
+        path="/models/lever.glb"
+        position={[0, 0, 0]}
+        scale={1}
+        manual={true} 
+        onActionsLoaded={handleActionsLoaded}
+      />
+    </group>
   );
 };
 
