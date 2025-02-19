@@ -62,18 +62,16 @@ const World = ({
   ];
 
   const wallLightPositions = [
-    { position: [-8, 4, -9], rotation: [0, Math.PI / 1, 0]},
-    { position: [8, 4, -9], rotation: [0, Math.PI / 1, 0]},
-    { position: [0, 4, -9], rotation: [0, Math.PI / 1, 0]},
-    { position: [-8, 4, 9.6], rotation: [0, 0, 0]},
-    { position: [8, 4, 9.6], rotation: [0, 0, 0]},
-    { position: [0, 4, 9.6], rotation: [0, 0, 0]},
-    { position: [9.6, 4, 8], rotation: [0, Math.PI / 2, 0]},
-    { position: [9.6, 4, 0], rotation: [0, Math.PI / 2, 0]},
-    { position: [9.6, 4, -8], rotation: [0, Math.PI / 2, 0]},
-    { position: [-9.6, 4, 8], rotation: [0, Math.PI / -2, 0]},
-    { position: [-9.6, 4, 0], rotation: [0, Math.PI / -2, 0]},
-    { position: [-9.6, 4, -8], rotation: [0, Math.PI / -2, 0]},
+    { position: [0, 4, -9.6], rotation: [0, 0, 0]},
+    { position: [-8, 4, 9.7], rotation: [0, Math.PI / 1, 0]},
+    { position: [8, 4, 9.7], rotation: [0, Math.PI / 1, 0]},
+    { position: [0, 4, 9.7], rotation: [0, Math.PI / 1, 0]},
+    { position: [9.6, 4, 8], rotation: [0, -Math.PI / 2, 0]},
+    { position: [9.6, 4, 0], rotation: [0, -Math.PI / 2, 0]},
+    { position: [9.6, 4, -8], rotation: [0, -Math.PI / 2, 0]},
+    { position: [-9.6, 4, 8], rotation: [0, Math.PI / 2, 0]},
+    { position: [-9.6, 4, 0], rotation: [0, Math.PI / 2, 0]},
+    { position: [-9.6, 4, -8], rotation: [0, Math.PI / 2, 0]},
 
   ]
 
@@ -178,7 +176,7 @@ const World = ({
           <Wall_light 
             key={index} 
             {...props} 
-            scale={[0.0015, 0.002, 0.002]} 
+            scale={0.15} 
             intensity={wheelsIntensity} 
           />
         ))}
@@ -197,15 +195,15 @@ const World = ({
         >
           <GLBModel 
             path="/models/bike.glb" 
-            position={[-2, 0.1, -4]} 
+            position={[-2, 0.27, -4]} 
             scale={[1, 1, 1]} 
             animationSpeed={energySource === "bike" ? 1 : 0.2} 
           />
           <GLBModel 
-            path="/models/treadmill.glb" 
-            position={[-2, 0, -4]} 
-            scale={[1.2, 1.2, 1.2]} 
-            rotation={[0, Math.PI / 2, 0]} 
+            path="/models/free_lowpoly_crossfit_-_treadmill.glb" 
+            position={[-2, 0, -3.8]} 
+            scale={2.5} 
+            rotation={[0, 0, 0]} 
           />
         </InteractiveWithTip>
 
