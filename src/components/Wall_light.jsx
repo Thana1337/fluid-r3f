@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
 const Wall_light = ({ position, rotation, scale, intensity = 1 }) => {
-  const { scene } = useGLTF("/models/wall_light.glb");
+  const { scene } = useGLTF("/models/wall_light_with_texture.glb");
   const lightRef = useRef();
   const currentIntensity = useRef(intensity);
 
