@@ -31,11 +31,8 @@ const Pipe = ({
           numParticles={100}
           particleType="steam"
         />
-        <group position={[-8, 4, -9]}>
-          <mesh onPointerDown={toggleLeftParticles} position={[0, -1.5, 0]}>
-            <boxGeometry args={[0.3, 1.5, 0.3]} />
-            <meshStandardMaterial color={leftParticlesOn ? "green" : "red"} />
-          </mesh>
+        <group position={[-8, 1, -9.5]}>
+          <Lever isOn={leftParticlesOn} toggle={toggleLeftParticles} />
           <Text
             position={[0, -2.5, 0]}
             fontSize={0.3}

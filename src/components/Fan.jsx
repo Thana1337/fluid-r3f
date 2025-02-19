@@ -28,8 +28,6 @@ const Fan = ({ isPowered }) => {
 
   // When the animationSpeed changes, play the "Take 001" clip and update its timeScale.
   useEffect(() => {
-    console.log("Animations:", animations);
-    console.log("Actions:", actions);
     if (actions["Take 001"]) {
       actions["Take 001"].play();
       actions["Take 001"].timeScale = animationSpeed;
