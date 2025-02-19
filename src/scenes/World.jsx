@@ -130,7 +130,7 @@ const World = ({
             <meshStandardMaterial color="#664422" /> 
           </mesh>
         </TeleportTarget>
-        <OrbitControls/>
+        
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
@@ -173,6 +173,17 @@ const World = ({
         <GLBModel path="/models/env/tree_low-poly_3d_model.glb" position={[-40,2,11]} scale={0.04} />
         <GLBModel path="/models/env/tree.glb" position={[-15,2,-30]} scale={0.02} animationSpeed={1} />
         <GLBModel path="/models/env/tree.glb" position={[15,2,30]} scale={0.02} animationSpeed={1} />
+        <GLBModel path="/models/cloud.glb" position={[15,50,30]} scale={0.5} animationSpeed={1} />
+
+        <GLBModel path="/models/env/low_poly_building.glb" position={[15,2,30]} scale={5}/>
+        <GLBModel path="/models/env/low_poly_building.glb" position={[15,2,30]} scale={5} rotation={[0, Math.PI / 2 ,0]}/>
+        <GLBModel path="/models/env/low_poly_buidling_gray.glb" position={[-30,2,40]} scale={4} rotation={[0, Math.PI / 2 ,0]}/>
+        <GLBModel path="/models/env/low_poly_building_big.glb" position={[-30,2,-60]} scale={2} rotation={[0, Math.PI / 2 ,0]}/>
+        <GLBModel path="/models/env/low_poly_building_big.glb" position={[-20,2,-120]} scale={2} rotation={[0, Math.PI / 2 ,0]}/>
+        <GLBModel path="/models/env/low_poly_building_big.glb" position={[20,-2,-120]} scale={2} rotation={[0, Math.PI / 4 ,0]}/>
+        <GLBModel path="/models/env/set_of_4_low-poly_buildings.glb" position={[50,-2,0]} scale={5} rotation={[0, Math.PI / 4 ,0]}/>
+        <GLBModel path="/models/env/set_of_4_low-poly_buildings.glb" position={[50,-2,-50]} scale={5} rotation={[0, Math.PI / 1 ,0]}/>
+
 
         <SleepingBagWithTip toggleNightMode={toggleNightMode} />
 

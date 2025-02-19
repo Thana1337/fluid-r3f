@@ -45,7 +45,13 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
       <GLBModel
         path="models/wheel_gen_right.glb"
         animationSpeed={rightSpeed}
-        position={[8, 2, -5]}
+        position={[8.9, 2, -5]}
+        scale={[1, 1, 1]}
+      />
+      <GLBModel
+        path="models/generator.glb"
+        animationSpeed={rightSpeed}
+        position={[6.5, 1.5, -5]}
         scale={[1, 1, 1]}
       />
       <GLBModel
@@ -58,8 +64,16 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
       <GLBModel
         path="models/wheel_gen_right.glb"
         animationSpeed={leftSpeed}
-        position={[-8, 2, -5]}
+        position={[-8.9, 2, -5]}
         scale={[1, 1, 1]}
+        rotation={[0,Math.PI /1, 0]}
+      />
+      <GLBModel
+        path="models/generator.glb"
+        animationSpeed={rightSpeed}
+        position={[-6.5, 1.5, -5]}
+        scale={[1, 1, 1]}
+        rotation={[0,Math.PI /1, 0]}
       />
       <GLBModel
         path="models/generator_small.glb"
