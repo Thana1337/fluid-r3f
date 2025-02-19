@@ -117,7 +117,7 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        <City scale={1.5} position={[75,-1,50]}/>
+        {/* <City scale={1.5} position={[75,-1,50]}/> */}
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
@@ -130,6 +130,7 @@ const World = ({
             <meshStandardMaterial color="#664422" /> 
           </mesh>
         </TeleportTarget>
+        <OrbitControls/>
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
@@ -167,9 +168,13 @@ const World = ({
         <GLBModel path="/models/env_pipe.glb" position={[6.5, -0.1, 7.5]} scale={[1, 1, 1]} />
         <GLBModel path="/models/env_pipe.glb" position={[-4, 4, -9.9]} scale={[1, 1, 1]} rotation={[0, Math.PI / 2 ,Math.PI / 2]} />
 
-        {/* Sleeping bag as day/night toggle with larger hit area */}
-        <SleepingBagWithTip toggleNightMode={toggleNightMode} />
+        <GLBModel path="/models/env/giant_low_poly_tree.glb" position={[-15,2,-11]} scale={1} />
+        <GLBModel path="/models/env/giant_low_poly_tree.glb" position={[15,5,-11]} scale={1.5}  rotation={[0, Math.PI / 2 ,0]}/>
+        <GLBModel path="/models/env/tree_low-poly_3d_model.glb" position={[-40,2,11]} scale={0.04} />
+        <GLBModel path="/models/env/tree.glb" position={[-15,2,-30]} scale={0.02} animationSpeed={1} />
+        <GLBModel path="/models/env/tree.glb" position={[15,2,30]} scale={0.02} animationSpeed={1} />
 
+        <SleepingBagWithTip toggleNightMode={toggleNightMode} />
 
         {pipePosition.map((props, index) => (
           <GLBModel path="/models/env_pipe_1.glb" key={index} {...props} scale={[2, 2, 2]} />
@@ -216,7 +221,7 @@ const World = ({
         >
           <GLBModel 
             path="/models/solar.glb" 
-            position={[0, 6.1, -11.2]} 
+            position={[0, 6.1, -11.3]} 
             scale={1.5} 
           />
         </InteractiveWithTip>
