@@ -1,7 +1,39 @@
-// src/components/VRButton.jsx
-import React from "react";
+// VRButton.jsx
+import React, { useState, useEffect } from "react";
+import { Filter } from "bad-words";
+
+const filter = new Filter();
 
 const VRButton = ({ onEnterVR }) => {
+  const [username, setUsername] = useState("");
+  const [hasUsername, setHasUsername] = useState(false);
+  const [error, setError] = useState("");
+
+  // On mount, check if a username is stored in localStorage
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+      setHasUsername(true);
+    }
+  }, []);
+
+  const handleSetUsernameAndEnter = () => {
+    const trimmedName = username.trim();
+    if (!trimmedName) {
+      setError("Username cannot be empty.");
+      return;
+    }
+    // Check for profanity using bad-words filter
+    if (filter.isProfane(trimmedName)) {
+      setError("Username contains inappropriate language. Please choose a different name.");
+      return;
+    }
+    localStorage.setItem("username", trimmedName);
+    setHasUsername(true);
+    onEnterVR();
+  };
+
   return (
     <div
       style={{
@@ -10,38 +42,105 @@ const VRButton = ({ onEnterVR }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        backdropFilter: "blur(3px)",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        backdropFilter: "blur(10px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         zIndex: 10,
+        fontFamily: "'Roboto', sans-serif",
       }}
     >
-      <button
-        onClick={onEnterVR}
-        style={{
-          padding: "1rem 2rem",
-          fontSize: "1.5rem",
-          backgroundColor: "#ffcc88",
-          border: "none",
-          borderRadius: "8px",
-          color: "black",
-          cursor: "pointer",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = "scale(1.1)";
-          e.target.style.boxShadow = "0 6px 8px rgba(0, 0, 0, 0.2)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = "scale(1)";
-          e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-        }}
-      >
-        Enter VR
-      </button>
+      {!hasUsername ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "2rem",
+            borderRadius: "12px",
+            boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+            width: "320px",
+            textAlign: "center",
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem", color: "#fff" }}>
+            Enter Your Username
+          </h2>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setError("");
+            }}
+            placeholder="Username..."
+            style={{
+              padding: "0.75rem",
+              fontSize: "1rem",
+              marginBottom: "1rem",
+              width: "100%",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              outline: "none",
+              transition: "border 0.3s ease",
+            }}
+            onFocus={(e) => (e.target.style.border = "1px solid #aaa")}
+            onBlur={(e) => (e.target.style.border = "1px solid #ddd")}
+          />
+          {error && (
+            <span style={{ color: "red", marginBottom: "1rem" }}>
+              {error}
+            </span>
+          )}
+          <button
+            onClick={handleSetUsernameAndEnter}
+            style={{
+              padding: "0.75rem 2rem",
+              fontSize: "1.25rem",
+              backgroundColor: "#FFC300",
+              color: "black",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease, transform 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)";
+            }}
+          >
+            Enter VR
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={onEnterVR}
+          style={{
+            padding: "1rem 2rem",
+            fontSize: "1.5rem",
+            backgroundColor: "#FFC300",
+            border: "none",
+            borderRadius: "8px",
+            color: "black",
+            cursor: "pointer",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "scale(1.1)";
+            e.target.style.boxShadow = "0 6px 8px rgba(0, 0, 0, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+            e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+          }}
+        >
+          Enter VR
+        </button>
+      )}
     </div>
   );
 };
