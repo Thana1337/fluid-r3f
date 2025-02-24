@@ -63,7 +63,7 @@ const Wheels = ({ leftSpin: leftTarget, rightSpin: rightTarget }) => {
       {/* Left Wheel controlled by the left pipe */}
       <GLBModel
         path="models/wheel_gen_right.glb"
-        animationSpeed={leftSpeed}
+        animationSpeed={-leftSpeed}
         position={[-8.9, 2, -5]}
         scale={[1, 1, 1]}
         rotation={[0,Math.PI /1, 0]}

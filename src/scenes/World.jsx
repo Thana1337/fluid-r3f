@@ -2,8 +2,8 @@
 import React, {useState} from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
-import { Vector3 } from "three";
-import { useGLTF, Preload } from '@react-three/drei';
+import { useGLTF, Preload, Html } from '@react-three/drei';
+
 
 
 import SunLight from "../components/SunLight";
@@ -11,19 +11,16 @@ import CelestialBody from "../components/CelestialBody";
 import SpinningCloud from "../components/SpinningCloud";
 import GLBModel from "../components/GLBModel";
 import Fence from "../components/Fence";
-import StreetLight from "../components/StreetLight";
-import ControlPanel from "../components/ControlPanel";
 import Lamp from "../components/Lamp";
 import Fan from "../components/Fan";
 import Pipe from "../components/Pipe";
 import Wall_light from "../components/Wall_light";
 import Wheels from "../components/Wheels";
 import Water from "../components/Water";
-import City from '../../public/City'
 import GameTip from "../components/GameTip";
-import { OrbitControls } from "@react-three/drei";
 import SleepingBagWithTip from "../components/SleepingBagWithTip";
 import InteractiveWithTip from "../components/InteractiveWithTip";
+import VRMenuController from "../components/VRMenuController";
 
 useGLTF.preload("/models/lamp.glb");
 useGLTF.preload("/models/fan.glb");
@@ -46,6 +43,9 @@ const World = ({
   isPowered,
   device,
 }) => {
+
+  
+
   const fencePositions = [
     { position: [-10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
     { position: [-10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
@@ -123,14 +123,15 @@ const World = ({
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
 
         {/* XR Origin and Teleport Target */}
-        <XROrigin position={position.toArray()} />
+        <XROrigin position={position.toArray()}>
+        <VRMenuController />
+        </XROrigin> 
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[17, 1, 19.5]} position={[-1.3, -0.5, 0]} receiveShadow castShadow >
             <boxGeometry />
             <meshStandardMaterial color="#664422" /> 
           </mesh>
         </TeleportTarget>
-        
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
