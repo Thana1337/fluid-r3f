@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect, useMemo  } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Vector3 } from "three";
 import useXRControls from "./hooks/useXRControls";
 import World from "./scenes/World";
@@ -14,6 +14,7 @@ function App() {
   const [isPowered, setIsPowered] = useState(false);
   const [isNight, setIsNight] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
+  const [isInVR, setIsInVR] = useState(false); 
 
   const handleEnergySourceChange = (source) => {
     setEnergySource(source);
@@ -39,7 +40,7 @@ function App() {
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
-      <VRButton onEnterVR={() => store.enterVR()} />
+      <VRButton onEnterVR={() => { setIsInVR(true); store.enterVR(); }} />
       <World
         store={store}
         position={position}
@@ -52,6 +53,7 @@ function App() {
         energySource={energySource}
         isPowered={isPowered}
         device={device}
+        isInVR={isInVR}  
       />
     </div>
   );

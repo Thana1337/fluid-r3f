@@ -8,16 +8,13 @@ const filter = new Filter();
 const ChatOverlay = () => {
   const { messages, sendMessage } = useChatHub();
   const [username, setUsername] = useState('');
-  const [hasSetUsername, setHasSetUsername] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
-  const [error, setError] = useState('');
 
-  // On mount, check if a username is stored in localStorage
+  // On mount, load the username from localStorage
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
-      setHasSetUsername(true);
     }
   }, []);
 
@@ -30,79 +27,6 @@ const ChatOverlay = () => {
     }
   };
 
-  const handleSetUsername = () => {
-    const trimmedName = username.trim();
-    if (trimmedName === '') {
-      setError('Username cannot be empty.');
-      return;
-    }
-    // Check for profanity using bad-words filter
-    if (filter.isProfane(trimmedName)) {
-      setError('Username contains inappropriate language. Please choose a different name.');
-      return;
-    }
-    // Save username in localStorage so it persists across sessions
-    localStorage.setItem('username', trimmedName);
-    setHasSetUsername(true);
-    setError('');
-  };
-
-  // Prompt for username if it hasn't been set
-  if (!hasSetUsername) {
-    return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '150px'
-      }}>
-        <div style={{
-          background: 'rgba(0,0,0,0.85)',
-          padding: '8px',
-          borderBottom: '1px solid gray',
-          fontSize: '1.2em',
-          textAlign: 'center'
-        }}>
-          Enter Your Username
-        </div>
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <input
-            type="text"
-            value={username}
-            onChange={e => {
-              setUsername(e.target.value);
-              setError('');
-            }}
-            placeholder="Username..."
-            style={{
-              padding: '6px',
-              width: '80%',
-              border: 'none',
-              outline: 'none'
-            }}
-          />
-          {error && <span style={{ color: 'red', marginTop: '4px' }}>{error}</span>}
-          <button onClick={handleSetUsername} style={{
-            marginTop: '10px',
-            padding: '6px 12px',
-            background: 'teal',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer'
-          }}>
-            Set
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Once the username is set, display the chat UI
   return (
     <div style={{
       display: 'flex',

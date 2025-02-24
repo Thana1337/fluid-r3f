@@ -21,6 +21,7 @@ import GameTip from "../components/GameTip";
 import SleepingBagWithTip from "../components/SleepingBagWithTip";
 import InteractiveWithTip from "../components/InteractiveWithTip";
 import VRMenuController from "../components/VRMenuController";
+import Multiplayer from "../components/Multiplayer";
 
 useGLTF.preload("/models/lamp.glb");
 useGLTF.preload("/models/fan.glb");
@@ -42,6 +43,7 @@ const World = ({
   energySource,
   isPowered,
   device,
+  isInVR,
 }) => {
 
   
@@ -132,6 +134,7 @@ const World = ({
             <meshStandardMaterial color="#36454F" /> 
           </mesh>
         </TeleportTarget>
+        <Multiplayer/>
         {/* Models */}
         <Pipe
           leftParticlesOn={leftParticlesOn}
@@ -205,9 +208,9 @@ const World = ({
         ))}
 
 
-
-        {/* ===== Direct Energy Source Selection ===== */}
-        <InteractiveWithTip
+        {isInVR && (
+          <>
+            <InteractiveWithTip
           tip="Tap here to select Bike"
           tipPosition={[-2, 0.1, -4]} 
           onClick={() => handleEnergySourceChange("bike")}
@@ -228,7 +231,7 @@ const World = ({
 
         <InteractiveWithTip
           tip="Tap here to select Solar"
-          tipPosition={[0, 6.5, -11]} // Adjust the tip position if necessary
+          tipPosition={[0, 6.5, -11]}
           onClick={() => handleEnergySourceChange("solar")}
         >
           <GLBModel 
@@ -257,6 +260,9 @@ const World = ({
           position={[1.9, 1.7, -2]} 
           visible={!isPowered}  
         />
+          </>
+        )}
+  
 
         {/* Devices */}
         <Lamp isPowered={isPowered} />
