@@ -129,7 +129,7 @@ const World = ({
         <TeleportTarget onTeleport={onTeleport}>
           <mesh scale={[17, 1, 19.5]} position={[-1.3, -0.5, 0]} receiveShadow castShadow >
             <boxGeometry />
-            <meshStandardMaterial color="#664422" /> 
+            <meshStandardMaterial color="#36454F" /> 
           </mesh>
         </TeleportTarget>
         {/* Models */}

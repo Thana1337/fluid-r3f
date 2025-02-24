@@ -1,19 +1,22 @@
 // useChatHub.js
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as signalR from '@microsoft/signalr';
 
 const useChatHub = () => {
   const [connection, setConnection] = useState(null);
-  const [messages, setMessages] = useState([]);
+  // Load initial messages from sessionStorage (if any)
+  const [messages, setMessages] = useState(() => {
+    const stored = sessionStorage.getItem('chatMessages');
+    return stored ? JSON.parse(stored) : [];
+  });
 
   useEffect(() => {
     // Build and start the connection
     const newConnection = new signalR.HubConnectionBuilder()
-
-    .withUrl('https://localhost:7232/chathub')
-    .withAutomaticReconnect()
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
+      .withUrl('https://localhost:7232/chathub') // update URL if needed
+      .withAutomaticReconnect()
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
 
     newConnection.start()
       .then(() => {
@@ -29,6 +32,11 @@ const useChatHub = () => {
       }
     };
   }, []);
+
+  // Persist messages in sessionStorage whenever they change
+  useEffect(() => {
+    sessionStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
 
   useEffect(() => {
     if (connection) {
