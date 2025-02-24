@@ -1,7 +1,7 @@
 // ChatOverlay.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useChatHub from '../hooks/useChatHub';
-import { Filter } from 'bad-words'
+import {Filter} from 'bad-words';
 
 const filter = new Filter();
 
@@ -11,6 +11,15 @@ const ChatOverlay = () => {
   const [hasSetUsername, setHasSetUsername] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [error, setError] = useState('');
+
+  // On mount, check if a username is stored in localStorage
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+      setHasSetUsername(true);
+    }
+  }, []);
 
   const handleSend = () => {
     if (inputMessage.trim() !== '') {
@@ -27,17 +36,18 @@ const ChatOverlay = () => {
       setError('Username cannot be empty.');
       return;
     }
-    // Use bad-words filter to check for profanity
+    // Check for profanity using bad-words filter
     if (filter.isProfane(trimmedName)) {
       setError('Username contains inappropriate language. Please choose a different name.');
       return;
     }
-    // If valid, set the username
+    // Save username in localStorage so it persists across sessions
+    localStorage.setItem('username', trimmedName);
     setHasSetUsername(true);
     setError('');
   };
 
-  // If the user hasn't set a username, show a username input
+  // Prompt for username if it hasn't been set
   if (!hasSetUsername) {
     return (
       <div style={{
@@ -92,7 +102,7 @@ const ChatOverlay = () => {
     );
   }
 
-  // Once the username is set, show the chat UI
+  // Once the username is set, display the chat UI
   return (
     <div style={{
       display: 'flex',

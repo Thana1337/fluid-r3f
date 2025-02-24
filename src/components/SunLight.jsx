@@ -7,7 +7,7 @@ const SunLight = ({ isNight }) => (
       castShadow
       position={[5, 10, 5]}
       intensity={isNight ? 0.2 : 1.5}
-      color={isNight ? "blue" : "yellow"}
+      color={isNight ? "blue" : "white"}
     />
     <ambientLight intensity={isNight ? 0.02 : 0.3} />
   </>
