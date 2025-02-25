@@ -27,9 +27,7 @@ const ChatOverlay3D = () => {
     }
   };
 
-  // Handlers for keyboard keys:
   const handleKeyPress = (key) => {
-    // For normal keys, append the character
     setInputMessage(prev => prev + key);
   };
 
@@ -45,23 +43,23 @@ const ChatOverlay3D = () => {
     <group>
       {/* Overall overlay background */}
       <mesh position={[0, 0, 0]}>
-        <planeGeometry args={[1.5, 1.2]} />
-        <meshBasicMaterial color="black" opacity={0.85} transparent />
+        <planeGeometry args={[2.5, 2.5]} />
+        <meshBasicMaterial color="black" opacity={0.8} transparent />
       </mesh>
 
       {/* Header panel */}
-      <mesh position={[0, 0.45, 0.01]}>
+      <mesh position={[0, 1, 0.01]}>
         <planeGeometry args={[1.5, 0.15]} />
-        <meshBasicMaterial color="black" opacity={0.85} transparent />
+        <meshBasicMaterial color="black" opacity={0.9} transparent />
       </mesh>
       <Text
-        position={[0, 0.45, 0.02]}
+        position={[0, 1, 0.02]}
         fontSize={0.06}
         color="white"
         anchorX="center"
         anchorY="middle"
       >
-        Chat Input
+        Chat
       </Text>
 
       {/* Messages area */}
@@ -82,26 +80,26 @@ const ChatOverlay3D = () => {
       </group>
 
       {/* Input area background */}
-      <mesh position={[0, -0.45, 0.01]}>
+      <mesh position={[-0.4, -0.45, 0.01]}>
         <planeGeometry args={[1.5, 0.2]} />
-        <meshBasicMaterial color="black" opacity={0.85} transparent />
+        <meshBasicMaterial color="white" opacity={0.85} transparent />
       </mesh>
 
       {/* Input field area (clickable to show keyboard) */}
       <mesh
-        position={[-0.5, -0.45, 0.02]}
+        position={[-0.4, -0.45, 0.02]}
         onPointerDown={() => {
           console.log("Input field clicked");
           setShowKeyboard(true);
         }}
       >
-        <planeGeometry args={[1.2, 0.2]} />
+        <planeGeometry args={[1.5, 0.2]} />
         <meshBasicMaterial color="gray" opacity={0.5} transparent />
       </mesh>
       <Text
-        position={[-0.5, -0.45, 0.03]}
+        position={[-1, -0.45, 0.03]}
         fontSize={0.04}
-        color="white"
+        color="black"
         anchorX="left"
         anchorY="middle"
       >

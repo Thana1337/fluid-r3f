@@ -32,7 +32,6 @@ const VirtualKeyboard = ({ onKeyPress, onBackspace, onEnter, position = [0, 0, 0
   // Helper function to render a row
   const renderRow = (keys, yOffset) =>
     keys.map((key, i) => {
-      // Center the row by offsetting based on the row length.
       const rowLength = keys.length;
       const xPos = i * 0.17 - (rowLength * 0.17) / 2;
       return (
@@ -52,11 +51,11 @@ const VirtualKeyboard = ({ onKeyPress, onBackspace, onEnter, position = [0, 0, 0
         {renderRow(row1, 0)}
       </group>
       {/* Second row */}
-      <group position={[0, -0.05, 0]}>
+      <group position={[0, -0.07, 0]}>
         {renderRow(row2, 0)}
       </group>
       {/* Third row with additional command keys */}
-      <group position={[0, -0.2, 0]}>
+      <group position={[0, -0.24, 0]}>
         {renderRow(row3, 0)}
         <VirtualKey 
           label="Back" 

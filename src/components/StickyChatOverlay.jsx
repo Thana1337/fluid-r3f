@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
 
-const StickyChatOverlay = ({ children, offset = [-0.7, -0.5, -3] }) => {
+const StickyChatOverlay = ({ children, offset = [0, 0, -3] }) => {
   const { camera } = useThree();
   const groupRef = useRef();
 
