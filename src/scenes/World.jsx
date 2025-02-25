@@ -119,7 +119,7 @@ const World = ({
         <color attach="background" args={[backgroundColor]} />
 
         {/* Environment */}
-        {/* <City scale={1.5} position={[75,-1,50]}/> */}
+        {/* <City scale={1.5} position={[75,-1,50]}/> */}   
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />

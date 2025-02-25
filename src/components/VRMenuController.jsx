@@ -1,7 +1,6 @@
-// VRMenuController.jsx
 import React from 'react';
 import useBButtonToggle from '../hooks/useBButtonToggle';
-import ChatOverlay from './ChatOverlay';
+import ChatOverlay3D from './ChatOverlay3D';
 import StickyChatOverlay from './StickyChatOverlay';
 
 const VRMenuController = () => {
@@ -11,7 +10,7 @@ const VRMenuController = () => {
     <>
       {isChatOpen && (
         <StickyChatOverlay>
-          <ChatOverlay />
+          <ChatOverlay3D />
         </StickyChatOverlay>
       )}
     </>
