@@ -1,8 +1,9 @@
 // src/scenes/World.jsx
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { useGLTF, Preload, Html } from '@react-three/drei';
+import { getQuestions } from '../hooks/useApi'
 
 
 
@@ -22,6 +23,7 @@ import SleepingBagWithTip from "../components/SleepingBagWithTip";
 import InteractiveWithTip from "../components/InteractiveWithTip";
 import VRMenuController from "../components/VRMenuController";
 import Multiplayer from "../components/Multiplayer";
+import QuestionList from "../components/QuestionList";
 
 useGLTF.preload("/models/lamp.glb");
 useGLTF.preload("/models/fan.glb");
@@ -104,6 +106,19 @@ const World = ({
     : 0.5;
     
 
+  const [questions, setQuestions] = useState([]);
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const data = await getQuestions();
+        setQuestions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
   return (
     <Canvas
     shadows
@@ -123,7 +138,7 @@ const World = ({
         <SunLight isNight={isNight} />
         <CelestialBody isNight={isNight} />
         <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
-
+        <QuestionList questions={questions} position={[0, 4, -3]} visible={true} />
         {/* XR Origin and Teleport Target */}
         <XROrigin position={position.toArray()}>
         <VRMenuController />
@@ -212,7 +227,7 @@ const World = ({
           <>
             <InteractiveWithTip
           tip="Tap here to select Bike"
-          tipPosition={[-2, 0.1, -4]} 
+          tipPosition={[-2, 2.5, -4]} 
           onClick={() => handleEnergySourceChange("bike")}
         >
           <GLBModel 
@@ -231,7 +246,7 @@ const World = ({
 
         <InteractiveWithTip
           tip="Tap here to select Solar"
-          tipPosition={[0, 6.5, -11]}
+          tipPosition={[0, 9, -8]}
           onClick={() => handleEnergySourceChange("solar")}
         >
           <GLBModel 

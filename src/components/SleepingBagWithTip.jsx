@@ -49,7 +49,7 @@ const SleepingBagWithTip = ({ toggleNightMode }) => {
       {/* Game tip that only appears when tipVisible is true */}
       <GameTip
         tip="Tap the sleeping bag to toggle day/night"
-        position={[0, 0.5, 6]}
+        position={[0, 1, 6]}
         visible={tipVisible}
       />
     </group>
