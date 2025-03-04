@@ -62,7 +62,6 @@ const Lever = ({ isOn, toggle }) => {
         manual={true} 
         onActionsLoaded={handleActionsLoaded}
       />
-      {/* Tip appears when hovered. GameTip uses Billboard so it always faces the camera */}
       <GameTip tip={tipText} position={[0, 1, 1]} visible={hovered} />
     </group>
   );

@@ -3,21 +3,19 @@ import React, { useRef, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Text, Billboard } from "@react-three/drei";
 
-const TextOverlay = ({ visible = false, text = "TEST" }) => {
+const TextOverlay = ({ visible = false, text = "TEST", offset = [0, -0.5, -1] }) => {
   const { camera } = useThree();
   const hudRef = useRef();
 
-  // Every frame, update the overlay's position relative to the camera.
+  // Update the overlay's position relative to the camera using the provided offset.
   useFrame(() => {
     if (hudRef.current) {
-      // Position relative to camera: adjust Y and Z as needed.
-      hudRef.current.position.set(0, -0.5, -1);
+      hudRef.current.position.set(...offset);
     }
   });
 
   useEffect(() => {
     if (hudRef.current) {
-      // Attach the overlay to the camera so it moves with it.
       camera.add(hudRef.current);
     }
     return () => {
@@ -29,12 +27,12 @@ const TextOverlay = ({ visible = false, text = "TEST" }) => {
     <group ref={hudRef} visible={visible}>
       <Billboard>
         <Text
-          fontSize={0.1}     
+          fontSize={0.07}
           color="white"
           anchorX="center"
           anchorY="middle"
           material-depthTest={false}
-          outlineWidth={0.1}
+          outlineWidth={0.08}
           outlineColor="black"
         >
           {text}
