@@ -1,10 +1,10 @@
-// useAButtonToggle.js
+// src/hooks/useAButtonPressed.js
 import { useState, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
-const useAButtonToggle = () => {
+const useAButtonPressed = () => {
   const { gl } = useThree();
-  const [actionActive, setActionActive] = useState(false);
+  const [justPressed, setJustPressed] = useState(false);
   const aButtonPrevRef = useRef(false);
 
   useFrame(() => {
@@ -15,7 +15,9 @@ const useAButtonToggle = () => {
           const aButton = inputSource.gamepad.buttons[4];
           const aPressed = aButton.pressed;
           if (aPressed && !aButtonPrevRef.current) {
-            setActionActive(prev => !prev);
+            setJustPressed(true);
+          } else {
+            setJustPressed(false);
           }
           aButtonPrevRef.current = aPressed;
         }
@@ -23,7 +25,7 @@ const useAButtonToggle = () => {
     }
   });
 
-  return actionActive;
+  return justPressed;
 };
 
-export default useAButtonToggle;
+export default useAButtonPressed;

@@ -24,6 +24,8 @@ import Multiplayer from "../components/Multiplayer";
 import QuestionList from "../components/QuestionList";
 import TextOverlay from "../components/TextOverlay";
 import SitChair from "../components/SitChair";
+import Bike from "../components/Bike";
+import Solar from "../components/Solar";
 
 const World = ({
   store,
@@ -99,7 +101,6 @@ const World = ({
   }, []);
 
   const [isSitting, setIsSitting] = useState(false);
-
   return (
     <Canvas
       shadows
@@ -198,49 +199,8 @@ const World = ({
 
           {isInVR && (
             <>
-              <InteractiveWithTip
-                tip="Press Ⓐ to select Bike"
-                tipPosition={[-2, 2.5, -4]}
-                onClick={() => handleEnergySourceChange("bike")}
-              >
-                <GLBModel
-                  path="/models/bike.glb"
-                  position={[-2, 0.27, -4]}
-                  scale={[1, 1, 1]}
-                  animationSpeed={energySource === "bike" ? 1 : 0.2}
-                />
-                <GLBModel
-                  path="/models/free_lowpoly_crossfit_-_treadmill.glb"
-                  position={[-2, 0, -3.8]}
-                  scale={2.5}
-                  rotation={[0, 0, 0]}
-                />
-              </InteractiveWithTip>
-              <InteractiveWithTip
-                tip="Press Ⓐ to select Solar"
-                tipPosition={[0, 2, -9]}
-                onClick={() => handleEnergySourceChange("solar")}
-              >
-                <GLBModel
-                  path="/models/solar.glb"
-                  position={[0, 6.1, -11.3]}
-                  scale={1.5}
-                />
-              </InteractiveWithTip>
-              <GameTip
-                tip="You are getting power from the treadmill!"
-                position={[-2, 1, -3]}
-                visible={energySource === "bike"}
-              />
-              <GameTip
-                tip={
-                  energySource === "solar" && isNight && !isPowered
-                    ? "Solar will only work when the sun is up!"
-                    : "You are getting power from the solarpanel!"
-                }
-                position={[0, 2.5, -9]}
-                visible={energySource === "solar"}
-              />
+              <Bike onSelect={handleEnergySourceChange} energySource={energySource} />
+              <Solar onSelect={handleEnergySourceChange} energySource={energySource} isNight={isNight} isPowered={isPowered} />
               <GameTip
                 tip="Your devices is not receiving any power. Please check your power source!"
                 position={[1.9, 2.2, -2]}
