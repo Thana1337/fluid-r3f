@@ -242,8 +242,8 @@ const World = ({
                 visible={energySource === "solar"}
               />
               <GameTip
-                tip="Your device is not receiving any power. Please check your power source!"
-                position={[1.9, 1.7, -2]}
+                tip="Your devices is not receiving any power. Please check your power source!"
+                position={[1.9, 2.2, -2]}
                 visible={!isPowered}
               />
             </>
