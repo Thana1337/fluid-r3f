@@ -1,12 +1,13 @@
 // src/components/Bike.jsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import GLBModel from "./GLBModel";
 import TextOverlay from "./TextOverlay";
-import useAButtonToggle from "../hooks/useAButtonToggle";
 import GameTip from "./GameTip";
+import useAButtonToggle from "../hooks/useAButtonToggle";
+import useDebouncedState from "../hooks/useDebouncedState";
 
 const Bike = ({ onSelect, energySource }) => {
-  const [tipVisible, setTipVisible] = useState(false);
+  const [tipVisible, setTipVisible] = useDebouncedState(false, 150);
   const aButtonPressed = useAButtonToggle();
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const Bike = ({ onSelect, energySource }) => {
         tip="You are getting power from the treadmill!"
         position={[-2, 2.2, -4]}
         visible={energySource === "bike"}
-        />
+      />
     </group>
   );
 };

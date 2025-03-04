@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Html } from '@react-three/drei';
-import { getQuestions } from '../hooks/useApi';
+import useQuestion from "../hooks/useQuestion";
 
 import SunLight from "../components/SunLight";
 import CelestialBody from "../components/CelestialBody";
@@ -18,10 +18,9 @@ import Wheels from "../components/Wheels";
 import Water from "../components/Water";
 import GameTip from "../components/GameTip";
 import SleepingBagWithTip from "../components/SleepingBagWithTip";
-import InteractiveWithTip from "../components/InteractiveWithTip";
 import VRMenuController from "../components/VRMenuController";
 import Multiplayer from "../components/Multiplayer";
-import QuestionList from "../components/QuestionList";
+import QuestionDisplay from "../components/QuestionDisplay";
 import TextOverlay from "../components/TextOverlay";
 import SitChair from "../components/SitChair";
 import Bike from "../components/Bike";
@@ -87,17 +86,14 @@ const World = ({
     leftParticlesOn && rightParticlesOn ? 1 : !leftParticlesOn && !rightParticlesOn ? 0 : 0.5
   ), [leftParticlesOn, rightParticlesOn]);
 
-  const [questions, setQuestions] = useState([]);
+  
+
+  const { currentQuestion, handleAnswer } = useQuestion();
+  //Reset score
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const data = await getQuestions();
-        setQuestions(data);
-      } catch (error) {
-        console.error(error);
-      }
+    return () => {
+      localStorage.setItem("score", "0");
     };
-    fetchQuestions();
   }, []);
 
   const [isSitting, setIsSitting] = useState(false);
@@ -116,7 +112,12 @@ const World = ({
           <SunLight isNight={isNight} />
           <CelestialBody isNight={isNight} />
           <SpinningCloud position={[0, 50, 0]} scale={[1, 1, 1]} />
-          <QuestionList questions={questions} position={[0, 4, -3]} visible={true} />
+          <QuestionDisplay
+            question={currentQuestion}
+            position={[0, 4, -3]}
+            visible={true}
+            onAnswer={handleAnswer}
+          />
           <XROrigin position={position.toArray()}>
             <VRMenuController />
           </XROrigin>

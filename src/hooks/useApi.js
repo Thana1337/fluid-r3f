@@ -6,7 +6,6 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://localhost:72
 export const getQuestions = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/api/Questions`);
-    console.log(response.data);
     if (Array.isArray(response.data)) {
       return response.data;
     } else if (response.data.questions && Array.isArray(response.data.questions)) {
