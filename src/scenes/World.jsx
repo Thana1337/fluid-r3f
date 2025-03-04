@@ -23,6 +23,7 @@ import VRMenuController from "../components/VRMenuController";
 import Multiplayer from "../components/Multiplayer";
 import QuestionList from "../components/QuestionList";
 import TextOverlay from "../components/TextOverlay";
+import SitChair from "../components/SitChair";
 
 const World = ({
   store,
@@ -36,7 +37,7 @@ const World = ({
   isPowered,
   isInVR,
 }) => {
-  // Memoize static arrays to avoid re-creating them on every render
+  // Memoize static arrays to avoid re-creating on every render
   const fencePositions = useMemo(() => ([
     { position: [-10, -1, -6.5], rotation: [0, Math.PI / 2, 0] },
     { position: [-10, -1, 0.2], rotation: [0, Math.PI / 2, 0] },
@@ -78,6 +79,8 @@ const World = ({
   const toggleLeftParticles = () => setLeftParticlesOn((prev) => !prev);
   const toggleRightParticles = () => setRightParticlesOn((prev) => !prev);
 
+  
+
   const wheelsIntensity = useMemo(() => (
     leftParticlesOn && rightParticlesOn ? 1 : !leftParticlesOn && !rightParticlesOn ? 0 : 0.5
   ), [leftParticlesOn, rightParticlesOn]);
@@ -94,6 +97,8 @@ const World = ({
     };
     fetchQuestions();
   }, []);
+
+  const [isSitting, setIsSitting] = useState(false);
 
   return (
     <Canvas
@@ -114,7 +119,15 @@ const World = ({
           <XROrigin position={position.toArray()}>
             <VRMenuController />
           </XROrigin>
-          <TeleportTarget onTeleport={onTeleport}>
+          <TeleportTarget
+            onTeleport={(target) => {
+              if (!isSitting) {
+                onTeleport(target);
+              } else {
+                console.log("Teleport disabled while sitting");
+              }
+            }}
+          >
             <mesh scale={[17, 1, 19.5]} position={[-1.3, -0.5, 0]} receiveShadow castShadow>
               <boxGeometry />
               <meshStandardMaterial color="#36454F" />
@@ -143,7 +156,7 @@ const World = ({
           <GLBModel path="/models/electric_distribution_box.glb" position={[0, 1.5, -9.4]} scale={2.5} animationSpeed={0} />
           <GLBModel path="/models/dumpster_large.glb" position={[-9, 0.8, 7]} scale={2.5} />
           <GLBModel path="/models/table.glb" position={[2, 0, -2]} scale={[0.3, 0.3, 0.3]} />
-          <GLBModel path="/models/low_poly_computer_chair.glb" position={[2, 0, -1]} scale={0.35} rotation={[0, -Math.PI/1.5, 0]} />
+          {/* <GLBModel path="/models/low_poly_computer_chair.glb" position={[2, 0, -1]} scale={0.35} rotation={[0, -Math.PI/1.5, 0]} /> */}
           <GLBModel path="/models/laptop.glb" position={[1.7, 1, -1.7]} scale={[0.5, 0.5, 0.5]} />
           <GLBModel path="/models/papers.glb" position={[-7, 0, -2]} scale={[1, 1, 1]} />
           <GLBModel path="/models/debris_pile.glb" position={[-7, 0, 5]} scale={[1, 1, 1]} />
@@ -176,11 +189,17 @@ const World = ({
           ))}
 
           <TextOverlay/>
+          <SitChair
+            seatPosition={[2, 0, -1]}
+            exitPosition={[1, 0, -0.3]} // Adjust the exit position as needed.
+            onSit={() => setIsSitting(true)}
+            onStand={() => setIsSitting(false)}
+          />
 
           {isInVR && (
             <>
               <InteractiveWithTip
-                tip="Tap here to select Bike"
+                tip="Press Ⓐ to select Bike"
                 tipPosition={[-2, 2.5, -4]}
                 onClick={() => handleEnergySourceChange("bike")}
               >
@@ -198,7 +217,7 @@ const World = ({
                 />
               </InteractiveWithTip>
               <InteractiveWithTip
-                tip="Tap here to select Solar"
+                tip="Press Ⓐ to select Solar"
                 tipPosition={[0, 2, -9]}
                 onClick={() => handleEnergySourceChange("solar")}
               >
