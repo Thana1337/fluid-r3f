@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, Billboard } from "@react-three/drei";
 
-const GameTip = ({ tip, position, visible }) => {
+const GameTip = React.memo(({ tip, position, visible }) => {
   if (!visible) return null;
   return (
     <Billboard position={position}>
@@ -24,6 +24,6 @@ const GameTip = ({ tip, position, visible }) => {
       </group>
     </Billboard>
   );
-};
+});
 
 export default GameTip;

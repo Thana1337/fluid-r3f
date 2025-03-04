@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Text, Billboard } from "@react-three/drei";
 
-const TextOverlay = ({ visible = false, text = "TEST", offset = [0, -0.5, -1] }) => {
+const TextOverlay = React.memo(({ visible = false, text = "TEST", offset = [0, -0.5, -1] }) => {
   const { camera } = useThree();
   const hudRef = useRef();
 
@@ -40,6 +40,6 @@ const TextOverlay = ({ visible = false, text = "TEST", offset = [0, -0.5, -1] })
       </Billboard>
     </group>
   );
-};
+});
 
 export default TextOverlay;
