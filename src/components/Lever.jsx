@@ -1,10 +1,14 @@
 // src/components/Lever.jsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import GLBModel from "./GLBModel";
+import useAButtonToggle from "../hooks/useAButtonToggle";
 
 const Lever = ({ isOn, toggle }) => {
   const actionsRef = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const aButtonPressed = useAButtonToggle();
+  const [prevAButtonPressed, setPrevAButtonPressed] = useState(false);
 
   const handleActionsLoaded = (actions) => {
     actionsRef.current = actions;
@@ -13,7 +17,6 @@ const Lever = ({ isOn, toggle }) => {
   useEffect(() => {
     if (!actionsRef.current) return;
     const availableKeys = Object.keys(actionsRef.current);
-
     const action =
       actionsRef.current["CubeAction"] || actionsRef.current[availableKeys[0]];
     if (!action) return;
@@ -22,7 +25,6 @@ const Lever = ({ isOn, toggle }) => {
     action.clampWhenFinished = true;
     
     const clipDuration = action.getClip().duration;
-    
     const speed = 3; 
 
     if (isOn && action.time >= clipDuration) {
@@ -36,13 +38,23 @@ const Lever = ({ isOn, toggle }) => {
     action.play();
   }, [isOn]);
 
+  useEffect(() => {
+    if (hovered && aButtonPressed && !prevAButtonPressed) {
+      toggle();
+    }
+    setPrevAButtonPressed(aButtonPressed);
+  }, [hovered, aButtonPressed, prevAButtonPressed, toggle]);
+
   return (
-    <group onPointerDown={toggle}>
+    <group
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
       <GLBModel
         path="/models/lever.glb"
         position={[0, 0, 0]}
         scale={1}
-        manual={true} 
+        manual={true}
         onActionsLoaded={handleActionsLoaded}
       />
     </group>

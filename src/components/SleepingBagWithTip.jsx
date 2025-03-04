@@ -1,38 +1,47 @@
-import React, { useState } from "react";
+// src/components/SleepingBagWithTip.jsx
+import React, { useState, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import GLBModel from "../components/GLBModel";
 import GameTip from "../components/GameTip";
+import useAButtonToggle from "../hooks/useAButtonToggle";
 
 const SleepingBagWithTip = ({ toggleNightMode }) => {
   const { camera } = useThree();
   const [tipVisible, setTipVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const aButtonPressed = useAButtonToggle();
+  const [prevAButtonPressed, setPrevAButtonPressed] = useState(false);
 
-  // Define the sleeping bag's position (should match the model's position)
   const sleepingBagPos = new THREE.Vector3(0, 0, 6);
-  // Distance (in world units) within which the tip shows
-  const thresholdDistance = 3;
-  // Dot product threshold to determine if the camera is "looking" at the bag
-  const lookThreshold = 0.95;
+  const thresholdDistance = 1;
+  const lookThreshold = 0.7;
 
   useFrame(() => {
-    // Calculate the distance from the camera to the sleeping bag
     const distance = camera.position.distanceTo(sleepingBagPos);
-
-    // Determine if the camera is looking at the sleeping bag
     const cameraDir = new THREE.Vector3();
     camera.getWorldDirection(cameraDir);
     const directionToBag = sleepingBagPos.clone().sub(camera.position).normalize();
     const dot = cameraDir.dot(directionToBag);
 
-    // The tip will be visible if the camera is close or looking directly at the bag
-    const shouldShowTip = distance < thresholdDistance || dot > lookThreshold;
+    const shouldShowTip = distance < thresholdDistance || Math.abs(dot) > lookThreshold;
     setTipVisible(shouldShowTip);
   });
 
+
+  useEffect(() => {
+    if (hovered && aButtonPressed && !prevAButtonPressed) {
+      toggleNightMode();
+    }
+    setPrevAButtonPressed(aButtonPressed);
+  }, [hovered, aButtonPressed, prevAButtonPressed, toggleNightMode]);
+
   return (
-    <group onPointerDown={toggleNightMode}>
-      {/* Larger invisible hit area for interaction */}
+    <group
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
+      {/* Invisible interaction mesh */}
       <mesh position={[0, 0, 6]} scale={[4, 1, 2]}>
         <boxGeometry args={[1, 1, 1]} />
         <meshBasicMaterial opacity={0} transparent />
@@ -46,7 +55,7 @@ const SleepingBagWithTip = ({ toggleNightMode }) => {
         rotation={[0, Math.PI / 2, 0]}
       />
 
-      {/* Game tip that only appears when tipVisible is true */}
+      {/* Tip displayed near the bag */}
       <GameTip
         tip="Tap the sleeping bag to toggle day/night"
         position={[0, 1, 6]}

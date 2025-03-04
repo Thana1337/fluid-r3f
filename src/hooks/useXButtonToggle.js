@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
-const useBButtonToggle = () => {
+const useXButtonToggle = () => {
   const { gl } = useThree();
   const [menuOpen, setMenuOpen] = useState(false);
   const xButtonPrevRef = useRef(false);
@@ -26,4 +26,4 @@ const useBButtonToggle = () => {
   return menuOpen;
 };
 
-export default useBButtonToggle;
+export default useXButtonToggle;
