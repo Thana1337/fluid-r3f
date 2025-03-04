@@ -12,7 +12,7 @@ const useBButtonToggle = () => {
     if (session) {
       for (const inputSource of session.inputSources) {
         if (inputSource.gamepad && inputSource.handedness === 'right') {
-          const bButton = inputSource.gamepad.buttons[4];
+          const bButton = inputSource.gamepad.buttons[5];
           const bPressed = bButton.pressed;
           if (bPressed && !bButtonPrevRef.current) {
             setActionActive(prev => !prev);
