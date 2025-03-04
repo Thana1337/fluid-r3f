@@ -22,6 +22,7 @@ import InteractiveWithTip from "../components/InteractiveWithTip";
 import VRMenuController from "../components/VRMenuController";
 import Multiplayer from "../components/Multiplayer";
 import QuestionList from "../components/QuestionList";
+import TextOverlay from "../components/TextOverlay";
 
 const World = ({
   store,
@@ -173,6 +174,9 @@ const World = ({
           {fencePositions.map((props, index) => (
             <Fence key={index} {...props} scale={[2.5, 4, 3]} />
           ))}
+
+          <TextOverlay/>
+
           {isInVR && (
             <>
               <InteractiveWithTip
@@ -195,7 +199,7 @@ const World = ({
               </InteractiveWithTip>
               <InteractiveWithTip
                 tip="Tap here to select Solar"
-                tipPosition={[0, 9, -8]}
+                tipPosition={[0, 2, -9]}
                 onClick={() => handleEnergySourceChange("solar")}
               >
                 <GLBModel
@@ -206,7 +210,7 @@ const World = ({
               </InteractiveWithTip>
               <GameTip
                 tip="You are getting power from the treadmill!"
-                position={[-2, 2, -4]}
+                position={[-2, 1, -3]}
                 visible={energySource === "bike"}
               />
               <GameTip
@@ -215,7 +219,7 @@ const World = ({
                     ? "Solar will only work when the sun is up!"
                     : "You are getting power from the solarpanel!"
                 }
-                position={[0, 10, -14]}
+                position={[0, 2.5, -9]}
                 visible={energySource === "solar"}
               />
               <GameTip
