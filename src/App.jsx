@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Vector3 } from "three";
 import useXRControls from "./hooks/useXRControls";
 import World from "./scenes/World";
@@ -16,15 +16,15 @@ function App() {
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
   const [isInVR, setIsInVR] = useState(false); 
 
-  const handleEnergySourceChange = (source) => {
+  const handleEnergySourceChange = useCallback((source) => {
     setEnergySource(source);
     if (source === "bike") setIsPowered(true);
     else if (source === "solar") setIsPowered(!isNight);
     else setIsPowered(false);
-  };
+  }, [isNight]);
 
-  const handleDeviceChange = (d) => setDevice(d);
-  const toggleNightMode = () => setIsNight((prev) => !prev);
+  const handleDeviceChange = useCallback((d) => setDevice(d), []);
+  const toggleNightMode = useCallback(() => setIsNight((prev) => !prev), []);
 
   useEffect(() => {
     if (energySource === "solar") {
@@ -36,7 +36,7 @@ function App() {
         setIsPowered(true);
       }
     }
-  }, [isNight]);
+  }, [isNight, energySource]);
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
