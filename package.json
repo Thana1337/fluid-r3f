@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@livekit/components-react": "^2.8.1",
+    "@livekit/components-styles": "^1.1.4",
     "@microsoft/signalr": "^8.0.7",
     "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^9.121.4",
@@ -18,6 +20,8 @@
     "@react-three/xr": "^6.5.4",
     "axios": "^1.8.1",
     "bad-words": "^4.0.0",
+    "livekit-client": "^2.9.5",
+    "livekit-server-sdk": "^2.10.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "socket.io-client": "^4.8.1",
