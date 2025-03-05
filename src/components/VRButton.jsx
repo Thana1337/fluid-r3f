@@ -1,5 +1,5 @@
-// VRButton.jsx
-import React, { useState, useEffect } from "react";
+// src/components/VRButton.jsx
+import React, { useState, useEffect, useRef } from "react";
 import { Filter } from "bad-words";
 
 const filter = new Filter();
@@ -9,8 +9,14 @@ const VRButton = ({ onEnterVR }) => {
   const [hasUsername, setHasUsername] = useState(false);
   const [error, setError] = useState("");
 
-  // On mount, check if a username is stored in localStorage
+  // Create a ref for AudioContext
+  const audioContextRef = useRef(null);
+
+  // On mount, create the AudioContext and check for stored username
   useEffect(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
@@ -18,20 +24,32 @@ const VRButton = ({ onEnterVR }) => {
     }
   }, []);
 
+  // Handler to resume AudioContext then enter VR
+  const handleEnterVR = async () => {
+    if (audioContextRef.current && audioContextRef.current.state !== "running") {
+      try {
+        await audioContextRef.current.resume();
+        console.log("AudioContext resumed");
+      } catch (err) {
+        console.error("Failed to resume AudioContext", err);
+      }
+    }
+    onEnterVR();
+  };
+
   const handleSetUsernameAndEnter = () => {
     const trimmedName = username.trim();
     if (!trimmedName) {
       setError("Username cannot be empty.");
       return;
     }
-    // Check for profanity using bad-words filter
     if (filter.isProfane(trimmedName)) {
       setError("Username contains inappropriate language. Please choose a different name.");
       return;
     }
     localStorage.setItem("username", trimmedName);
     setHasUsername(true);
-    onEnterVR();
+    handleEnterVR();
   };
 
   return (
@@ -117,7 +135,7 @@ const VRButton = ({ onEnterVR }) => {
         </div>
       ) : (
         <button
-          onClick={onEnterVR}
+          onClick={handleEnterVR}
           style={{
             padding: "1rem 2rem",
             fontSize: "1.5rem",

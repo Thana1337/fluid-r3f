@@ -4,6 +4,9 @@ import { Vector3 } from "three";
 import useXRControls from "./hooks/useXRControls";
 import World from "./scenes/World";
 import VRButton from "./components/VRButton"; 
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import PublishLocalAudio from "./components/PublishLocalAudio"; 
+
 
 function App() {
   const store = useMemo(() => useXRControls(), []);
@@ -38,7 +41,13 @@ function App() {
     }
   }, [isNight, energySource]);
 
+  const liveKitToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDExNzc3MzQsImlzcyI6IkFQSTVkcTV4VUVpQzJKOSIsIm5hbWUiOiJUaGFuYSIsIm5iZiI6MTc0MTE3NDEzNCwic3ViIjoiVGhhbmEiLCJ2aWRlbyI6eyJyb29tIjoidnItcm9vbSIsInJvb21Kb2luIjp0cnVlfX0.5xhCGNSgXSgopYdaqxsOWOgUlQYLfid1jduD9bMGekU";
+  const liveKitWsUrl = "wss://vr-voice-1w4014yg.livekit.cloud";
+
+  
+
   return (
+    <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
       <VRButton onEnterVR={() => { setIsInVR(true); store.enterVR(); }} />
       <World
@@ -55,7 +64,12 @@ function App() {
         device={device}
         isInVR={isInVR}  
       />
+      <RoomAudioRenderer/>
+      <PublishLocalAudio/>
     </div>
+
+    </LiveKitRoom>
+
   );
 }
 
