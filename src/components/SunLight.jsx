@@ -9,7 +9,7 @@ const SunLight = ({ isNight }) => (
       intensity={isNight ? 0.2 : 1.5}
       color={isNight ? "blue" : "white"}
     />
-    <ambientLight intensity={isNight ? 0.02 : 0.3} />
+    <ambientLight intensity={isNight ? 0.5 : 0.8} />
   </>
 );
 
