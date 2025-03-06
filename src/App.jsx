@@ -18,17 +18,16 @@ function App() {
   const [isNight, setIsNight] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
   const [isInVR, setIsInVR] = useState(false); 
-
+  const [liveKitToken, setLiveKitToken] = useState(null);
+  
   const handleEnergySourceChange = useCallback((source) => {
     setEnergySource(source);
     if (source === "bike") setIsPowered(true);
     else if (source === "solar") setIsPowered(!isNight);
     else setIsPowered(false);
   }, [isNight]);
-
   const handleDeviceChange = useCallback((d) => setDevice(d), []);
   const toggleNightMode = useCallback(() => setIsNight((prev) => !prev), []);
-
   useEffect(() => {
     if (energySource === "solar") {
       if (isNight) {
@@ -41,10 +40,23 @@ function App() {
     }
   }, [isNight, energySource]);
 
-  const liveKitToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDExNzc3MzQsImlzcyI6IkFQSTVkcTV4VUVpQzJKOSIsIm5hbWUiOiJUaGFuYSIsIm5iZiI6MTc0MTE3NDEzNCwic3ViIjoiVGhhbmEiLCJ2aWRlbyI6eyJyb29tIjoidnItcm9vbSIsInJvb21Kb2luIjp0cnVlfX0.5xhCGNSgXSgopYdaqxsOWOgUlQYLfid1jduD9bMGekU";
   const liveKitWsUrl = "wss://vr-voice-1w4014yg.livekit.cloud";
+// Fetch token from server.js
+  useEffect(() => {
+  const username = localStorage.getItem("username");
+  if (!username) {
+    console.error("Username not found in localStorage");
+    return;
+  }
+  fetch(`http://localhost:4000/api/token?username=${encodeURIComponent(username)}`)
+  .then((res) => res.json())
+  .then((data) => setLiveKitToken(data.token))
+  .catch((err) => console.error("Error fetching token:", err));
+}, []);
 
-  
+  if (!liveKitToken) {
+    return <div>Loading token...</div>;
+  }
 
   return (
     <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
