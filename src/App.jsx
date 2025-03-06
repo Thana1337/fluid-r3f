@@ -54,9 +54,6 @@ function App() {
   .catch((err) => console.error("Error fetching token:", err));
 }, []);
 
-  if (!liveKitToken) {
-    return <div>Loading token...</div>;
-  }
 
   return (
     <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
