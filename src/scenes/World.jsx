@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Html } from '@react-three/drei';
 import useQuestion from "../hooks/useQuestion";
-import { useRoom } from "../components/LiveKitRoomProvider";
+import { useParticipants } from "@livekit/components-react";
 
 import SunLight from "../components/SunLight";
 import CelestialBody from "../components/CelestialBody";
@@ -99,18 +99,13 @@ const World = ({
 
   const [isSitting, setIsSitting] = useState(false);
 
-  const room = useRoom();
+  const participants = useParticipants();
 
-  useEffect(() => {
-    if (room) {
-      room.on('participantConnected', (participant) => {
-        console.log('Participant connected:', participant.identity);
-      });
-      room.on('participantDisconnected', (participant) => {
-        console.log('Participant disconnected:', participant.identity);
-      });
-    }
-  }, [room]);
+useEffect(() => {
+  participants.forEach((participant) => {
+    console.log('Participant:', participant.identity);
+  });
+}, [participants]);
   
   
 
