@@ -115,19 +115,10 @@ useEffect(() => {
       camera={{ position: [5, 3, 5] }}
       onCreated={({ gl }) => {
         gl.xr.enabled = true;
-        gl.xr.setSessionInit({
-          optionalFeatures: ['local-floor', 'bounded-floor']
-        });
       }}
-      
     >
       <Suspense fallback={<Html center>Loading...</Html>}>
-        <XR 
-        store={store}
-        sessionInit={{
-          requiredFeatures: [],
-          optionalFeatures: ['local-floor', 'bounded-floor']
-        }}>
+        <XR store={store}>
           {/* Set the background color */}
           <color attach="background" args={[backgroundColor]} />
           <SunLight isNight={isNight} />
