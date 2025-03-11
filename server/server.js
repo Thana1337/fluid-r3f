@@ -6,7 +6,7 @@ const socketIo = require('socket.io');
 const { AccessToken, VideoGrant } = require('livekit-server-sdk');
 
 const app = express();
-app.use(cors()); //CORS middleware
+app.use(cors());
 
 const server = http.createServer(app);
 const io = socketIo(server, {

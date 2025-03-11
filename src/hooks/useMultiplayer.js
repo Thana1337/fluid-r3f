@@ -6,7 +6,9 @@ const useMultiplayer = () => {
   const [players, setPlayers] = useState({});
 
   useEffect(() => {
-    const newSocket = io(import.meta.env.SERVER_API);
+    const SERVER_API = import.meta.env.VITE_SERVER_API;
+    const newSocket = io(SERVER_API);
+    console.log("SERVER_API:", import.meta.env.VITE_SERVER_API);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
