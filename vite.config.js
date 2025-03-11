@@ -8,9 +8,11 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    outDir: "dist"},
   resolve: {
     alias: {
       'three': path.resolve(__dirname, 'node_modules/three')
     }
-  }
+  },
 });
