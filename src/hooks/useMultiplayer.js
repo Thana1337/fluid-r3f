@@ -3,11 +3,10 @@ import io from 'socket.io-client';
 
 const useMultiplayer = () => {
   const [socket, setSocket] = useState(null);
-  // Store other players as an object keyed by their socket IDs.
   const [players, setPlayers] = useState({});
 
   useEffect(() => {
-    const newSocket = io('http://localhost:4000'); // update to your server URL
+    const newSocket = io(import.meta.env.SERVER_API);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -34,7 +33,6 @@ const useMultiplayer = () => {
     return () => newSocket.close();
   }, []);
 
-  // Function to send the current player position
   const updateMyPosition = (position) => {
     if (socket) {
       socket.emit('updatePosition', position);

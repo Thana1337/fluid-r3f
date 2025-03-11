@@ -5,14 +5,12 @@ import { getQuestions } from "./useApi";
 const useQuestion = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
 
-  // Fetch a question from the API without including currentQuestion as dependency.
   const fetchQuestion = useCallback(async () => {
     try {
       const data = await getQuestions();
       if (Array.isArray(data) && data.length > 0) {
         setCurrentQuestion((prevQuestion) => {
           let nextIndex = Math.floor(Math.random() * data.length);
-          // If we already have a question and the new one is the same, choose next index.
           if (prevQuestion && data[nextIndex].id === prevQuestion.id && data.length > 1) {
             nextIndex = (nextIndex + 1) % data.length;
           }
@@ -24,7 +22,7 @@ const useQuestion = () => {
     } catch (error) {
       console.error("Error fetching question:", error);
     }
-  }, []); // No dependency on currentQuestion
+  }, []);
 
   // Initialize on mount.
   useEffect(() => {
@@ -52,7 +50,6 @@ const useQuestion = () => {
         console.log(`Incorrect. ${username}'s score remains: ${score}`);
       }
 
-      // Fetch the next question.
       fetchQuestion();
     },
     [fetchQuestion]

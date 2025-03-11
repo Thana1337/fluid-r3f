@@ -13,7 +13,7 @@ const useChatHub = () => {
   useEffect(() => {
     // Build and start the connection
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7232/chathub') // update URL if needed
+      .withUrl('https://localhost:7232/chathub')
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Information)
       .build();
