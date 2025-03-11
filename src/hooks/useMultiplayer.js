@@ -7,8 +7,13 @@ const useMultiplayer = () => {
 
   useEffect(() => {
     const SERVER_API = import.meta.env.VITE_SERVER_API;
-    const newSocket = io(SERVER_API);
-    console.log("SERVER_API:", import.meta.env.VITE_SERVER_API);
+    console.log("Connecting to:", SERVER_API);
+
+    const newSocket = io(SERVER_API, {
+        transports: ["websocket", "polling"],
+        withCredentials: true, 
+    });
+
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
