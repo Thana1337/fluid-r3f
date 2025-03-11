@@ -118,7 +118,11 @@ useEffect(() => {
       }}
     >
       <Suspense fallback={<Html center>Loading...</Html>}>
-        <XR store={store}>
+        <XR 
+        store={store}
+        sessionInit={{
+          optionalFeatures: ['local-floor', 'bounded-floor']
+        }}>
           {/* Set the background color */}
           <color attach="background" args={[backgroundColor]} />
           <SunLight isNight={isNight} />
