@@ -3,6 +3,9 @@ import React from "react";
 import SunLight from "../components/SunLight";
 import CelestialBody from "../components/CelestialBody";
 
+
+
+
 const Environment = ({ isNight }) => (
   <>
     <SunLight isNight={isNight} />

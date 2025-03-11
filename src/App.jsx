@@ -1,12 +1,15 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Vector3 } from "three";
 import useXRControls from "./hooks/useXRControls";
 import World from "./scenes/World";
-import VRButton from "./components/VRButton"; // your VR button overlay
+import VRButton from "./components/VRButton"; 
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import PublishLocalAudio from "./components/PublishLocalAudio"; 
+
 
 function App() {
-  const store = useXRControls();
+  const store = useMemo(() => useXRControls(), []);
 
   const [position, setPosition] = useState(new Vector3());
   const [energySource, setEnergySource] = useState(null);
@@ -14,17 +17,17 @@ function App() {
   const [isPowered, setIsPowered] = useState(false);
   const [isNight, setIsNight] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
-
-  const handleEnergySourceChange = (source) => {
+  const [isInVR, setIsInVR] = useState(false); 
+  const [liveKitToken, setLiveKitToken] = useState(null);
+  
+  const handleEnergySourceChange = useCallback((source) => {
     setEnergySource(source);
     if (source === "bike") setIsPowered(true);
     else if (source === "solar") setIsPowered(!isNight);
     else setIsPowered(false);
-  };
-
-  const handleDeviceChange = (d) => setDevice(d);
-  const toggleNightMode = () => setIsNight((prev) => !prev);
-
+  }, [isNight]);
+  const handleDeviceChange = useCallback((d) => setDevice(d), []);
+  const toggleNightMode = useCallback(() => setIsNight((prev) => !prev), []);
   useEffect(() => {
     if (energySource === "solar") {
       if (isNight) {
@@ -35,12 +38,27 @@ function App() {
         setIsPowered(true);
       }
     }
-  }, [isNight]);
+  }, [isNight, energySource]);
+
+  const liveKitWsUrl = "wss://vr-voice-1w4014yg.livekit.cloud";
+// Fetch token from server.js
+  useEffect(() => {
+  const username = localStorage.getItem("username");
+  if (!username) {
+    console.error("Username not found in localStorage");
+    return;
+  }
+  fetch(`http://localhost:4000/api/token?username=${encodeURIComponent(username)}`)
+  .then((res) => res.json())
+  .then((data) => setLiveKitToken(data.token))
+  .catch((err) => console.error("Error fetching token:", err));
+}, []);
+
 
   return (
+    <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
-      {/* VR Button overlay – it now uses the same store */}
-      <VRButton onEnterVR={() => store.enterVR()} />
+      <VRButton onEnterVR={() => { setIsInVR(true); store.enterVR(); }} />
       <World
         store={store}
         position={position}
@@ -53,8 +71,14 @@ function App() {
         energySource={energySource}
         isPowered={isPowered}
         device={device}
+        isInVR={isInVR}  
       />
+      <RoomAudioRenderer/>
+      <PublishLocalAudio/>
     </div>
+
+    </LiveKitRoom>
+
   );
 }
 

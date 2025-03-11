@@ -49,12 +49,6 @@ function CelestialBody({ isNight }) {
         position={sunPosition}
         scale={[0.05, 0.05, 0.05]}
       />
-      <directionalLight
-        position={sunPosition}
-        intensity={3}
-        color="yellow"
-        castShadow
-      />
     </group>
   );
 }

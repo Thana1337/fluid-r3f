@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
-const SpinningCloud = ({ position, scale, rotationSpeed = 0.0001 }) => {
+const SpinningCloud = ({ position, scale, rotationSpeed = 0.0005 }) => {
   const cloudRef = useRef();
   const { scene } = useGLTF("/models/cloud.glb");
   useFrame(() => {

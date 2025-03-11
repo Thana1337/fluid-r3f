@@ -3,7 +3,7 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 
 const Fence = ({ position, rotation, scale }) => {
-  const { scene } = useGLTF("/models/fence.glb");
+  const { scene } = useGLTF("/models/brick_wall.glb");
   return <primitive object={scene.clone()} position={position} rotation={rotation} scale={scale} />;
 };
 
