@@ -121,6 +121,7 @@ useEffect(() => {
         <XR 
         store={store}
         sessionInit={{
+          requiredFeatures: [],
           optionalFeatures: ['local-floor', 'bounded-floor']
         }}>
           {/* Set the background color */}
