@@ -6,6 +6,7 @@ import World from "./scenes/World";
 import VRButton from "./components/VRButton"; 
 import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import PublishLocalAudio from "./components/PublishLocalAudio"; 
+import { XRDevice, metaQuest3 } from 'iwer';
 
 
 function App() {
@@ -55,6 +56,9 @@ function App() {
 }, []);
 
 
+const xrDevice = new XRDevice(metaQuest3);
+xrDevice.installRuntime();
+
   return (
     <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
@@ -76,7 +80,6 @@ function App() {
       <RoomAudioRenderer/>
       <PublishLocalAudio/>
     </div>
-
     </LiveKitRoom>
 
   );

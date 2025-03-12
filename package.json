@@ -20,6 +20,7 @@
     "@react-three/xr": "^6.5.4",
     "axios": "^1.8.1",
     "bad-words": "^4.0.0",
+    "iwer": "^1.1.1",
     "livekit-client": "^2.9.5",
     "livekit-server-sdk": "^2.10.2",
     "react": "^18.3.1",
