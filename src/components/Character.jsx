@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
-import { Html } from '@react-three/drei';
-import { useGLTF } from '@react-three/drei';
-import * as THREE from 'three';
+// src/components/Character.jsx
+import React, { useMemo } from "react";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+import NameTag from "./NameTag";
 
 const Character = ({ color, username, ...props }) => {
-  const { scene } = useGLTF('/models/character_model.glb');
+  const { scene } = useGLTF("/models/character_model.glb");
 
   // Clone and modify the scene so that changes don't affect the original.
   const clonedScene = useMemo(() => {
@@ -15,29 +16,14 @@ const Character = ({ color, username, ...props }) => {
         child.material.color = new THREE.Color(color);
       }
     });
-
     return clone;
   }, [scene, color]);
 
   return (
     <group {...props}>
       <primitive object={clonedScene} />
-
-      {/* Floating Name Above Character */}
-      <Html position={[0, 1, 0]} center>
-        <div style={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: 'white',
-          background: 'rgba(0, 0, 0, 0.6)',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-        }}>
-          {username}
-        </div>
-      </Html>
+      {/* Floating name tag above the character */}
+      <NameTag username={username} offset={[0, 1, 0]} />
     </group>
   );
 };

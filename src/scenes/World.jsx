@@ -1,5 +1,5 @@
 // src/scenes/World.jsx
-import React, { useState, useEffect, Suspense, useMemo } from "react";
+import React, { useState, useEffect, Suspense, useMemo, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR, XROrigin, TeleportTarget } from "@react-three/xr";
 import { Html } from '@react-three/drei';
@@ -101,11 +101,16 @@ const World = ({
 
   const participants = useParticipants();
 
-useEffect(() => {
-  participants.forEach((participant) => {
-    console.log('Participant:', participant.identity);
-  });
-}, [participants]);
+  const prevParticipants = useRef({});
+
+  useEffect(() => {
+    participants.forEach((participant) => {
+      if (!prevParticipants.current[participant.sid]) {
+        console.log("New participant:", participant.identity);
+        prevParticipants.current[participant.sid] = participant;
+      }
+    });
+  }, [participants]);
   
   
 

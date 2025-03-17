@@ -6,12 +6,11 @@ import World from "./scenes/World";
 import VRButton from "./components/VRButton"; 
 import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import PublishLocalAudio from "./components/PublishLocalAudio"; 
+import SetUsername from "./components/SetUsername";
 import { XRDevice, metaQuest3 } from 'iwer';
-
 
 function App() {
   const store = useMemo(() => useXRControls(), []);
-
   const [position, setPosition] = useState(new Vector3());
   const [energySource, setEnergySource] = useState(null);
   const [device, setDevice] = useState(null);
@@ -20,15 +19,19 @@ function App() {
   const [backgroundColor, setBackgroundColor] = useState("#ffcc88");
   const [isInVR, setIsInVR] = useState(false); 
   const [liveKitToken, setLiveKitToken] = useState(null);
-  
+  // Check if a username exists in localStorage
+  const [usernameSet, setUsernameSet] = useState(!!localStorage.getItem("username"));
+
   const handleEnergySourceChange = useCallback((source) => {
     setEnergySource(source);
     if (source === "bike") setIsPowered(true);
     else if (source === "solar") setIsPowered(!isNight);
     else setIsPowered(false);
   }, [isNight]);
+
   const handleDeviceChange = useCallback((d) => setDevice(d), []);
   const toggleNightMode = useCallback(() => setIsNight((prev) => !prev), []);
+
   useEffect(() => {
     if (energySource === "solar") {
       if (isNight) {
@@ -42,46 +45,51 @@ function App() {
   }, [isNight, energySource]);
 
   const liveKitWsUrl = "wss://vr-voice-1w4014yg.livekit.cloud";
-// Fetch token from server.js
+
+  // Fetch token only when username is set.
   useEffect(() => {
-  const username = localStorage.getItem("username");
-  if (!username) {
-    console.error("Username not found in localStorage");
-    return;
+    if (!usernameSet) return;
+    const username = localStorage.getItem("username");
+    fetch(`https://vr-server.onrender.com/api/token?username=${encodeURIComponent(username)}`)
+      .then((res) => res.json())
+      .then((data) => setLiveKitToken(data.token))
+      .catch((err) => console.error("Error fetching token:", err));
+  }, [usernameSet]);
+
+  // const xrDevice = new XRDevice(metaQuest3);
+  // xrDevice.installRuntime();
+
+
+  const handleUsernameSet = (username) => {
+    setUsernameSet(true);
+  };
+
+  if (!usernameSet) {
+    return <SetUsername onUsernameSet={handleUsernameSet} />;
   }
-  fetch(`http://localhost:4000/api/token?username=${encodeURIComponent(username)}`)
-  .then((res) => res.json())
-  .then((data) => setLiveKitToken(data.token))
-  .catch((err) => console.error("Error fetching token:", err));
-}, []);
-
-
-const xrDevice = new XRDevice(metaQuest3);
-xrDevice.installRuntime();
 
   return (
     <LiveKitRoom token={liveKitToken} serverUrl={liveKitWsUrl} audio={true} video={true}>
-    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
-      <VRButton onEnterVR={() => { setIsInVR(true); store.enterVR(); }} />
-      <World
-        store={store}
-        position={position}
-        backgroundColor={backgroundColor}
-        onTeleport={(newPos) => setPosition(newPos)}
-        handleEnergySourceChange={handleEnergySourceChange}
-        handleDeviceChange={handleDeviceChange}
-        toggleNightMode={toggleNightMode}
-        isNight={isNight}
-        energySource={energySource}
-        isPowered={isPowered}
-        device={device}
-        isInVR={isInVR}  
-      />
-      <RoomAudioRenderer/>
-      <PublishLocalAudio/>
-    </div>
+      <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
+        <VRButton onEnterVR={() => { setIsInVR(true); store.enterVR(); }} />
+        <World
+          store={store}
+          position={position}
+          backgroundColor={backgroundColor}
+          onTeleport={(newPos) => setPosition(newPos)}
+          handleEnergySourceChange={handleEnergySourceChange}
+          handleDeviceChange={handleDeviceChange}
+          toggleNightMode={toggleNightMode}
+          isNight={isNight}
+          energySource={energySource}
+          isPowered={isPowered}
+          device={device}
+          isInVR={isInVR}  
+        />
+        <RoomAudioRenderer/>
+        <PublishLocalAudio/>
+      </div>
     </LiveKitRoom>
-
   );
 }
 
